@@ -29,7 +29,7 @@ public class SecueciaSimonSays : MonoBehaviour {
 	void CreaSecuenciaEnemiga()
 	{
 		for (int i = 0; i < noMovimientos; i++) {
-			numRan = Random.Range (0, 10);	//10 es el tamaño de nuestro enum
+			numRan = Random.Range (0, System.Enum.GetNames(typeof(SimonSays)).Length);	//10 es el tamaño de nuestro enum
 			LlenaListaEnemiga (numRan);
 		}
 	}

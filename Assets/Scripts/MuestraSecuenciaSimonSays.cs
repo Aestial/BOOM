@@ -3,7 +3,19 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class MuestraSecuenciaSimonSays : MonoBehaviour {
+public class MuestraSecuenciaSimonSays : MonoBehaviour 
+{
+	[System.Serializable]
+	public struct ShipButton 
+	{
+		public string name;
+		public GameObject go;
+		public Color normalColor;
+		public Color activeColor;
+		public Texture2D texture;
+	}
+
+	[SerializeField] private ShipButton[] buttons;
 
 	//Palnaca
 	public Button palanca;
