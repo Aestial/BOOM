@@ -13,7 +13,7 @@ public class GameButton
 	{
 		get { return _id; }
 		set { _id = value; }
-	} 
+	}
 }
 
 [CreateAssetMenu(fileName = "New Buttons Array", menuName = "Game Button Array")]
