@@ -6,10 +6,12 @@ using UnityEngine.SceneManagement;
 
 public class AppManager : Singleton<AppManager> 
 {
-	private int mCurrentScene;
-	private int mScenesLength;
+	#if UNITY_EDITOR
 	private EditorBuildSettingsScene[] mScenes;
-
+	#endif
+	[SerializeField] private int mScenesLength;
+	private int mCurrentScene;
+	
 	#region Don't Destroy OnLoad Singleton
 
 	public bool iAmFirst;
@@ -41,11 +43,16 @@ public class AppManager : Singleton<AppManager>
 	// Use this for initialization
 	void Start () 
 	{
-		// Get Scenes Length
+		// Start Scene
+		this.mCurrentScene = 0;
+
+		#if UNITY_EDITOR
+		// Get Scenes from Editor and Length
 		this.mScenes = EditorBuildSettings.scenes;
 		this.mScenesLength = this.mScenes.Length;
-		this.mCurrentScene = 0;
+		// Debug Info
 		this.ShowScenesInfo();
+		#endif
 	}
 
 	// Update is called once per frame
@@ -104,7 +111,8 @@ public class AppManager : Singleton<AppManager>
 	}
 
 	#region Debug Functions
-	
+	#if UNITY_EDITOR
+
 	private const string mScenesPathPrefix = "Assets/_Scenes/";
 	private const string mScenesPathSuffix = ".unity";
 
@@ -119,6 +127,7 @@ public class AppManager : Singleton<AppManager>
 			Debug.Log("Scene " + i + ": " + name);
 		}
 	}
-	
+
+	#endif
 	#endregion
 }

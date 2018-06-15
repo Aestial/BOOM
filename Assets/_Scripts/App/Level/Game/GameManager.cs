@@ -4,11 +4,23 @@ using UnityEngine;
 
 public class GameManager : Singleton<GameManager> 
 {
+	// Gameplay objects
+	[Header("Objects")]
+	[SerializeField] private ShipController ship;
+
 	// Gameplay parameters
-	public float waitTime;
+	[Header("Parameters")]
+	[SerializeField] private int startLength;
+	[Header("Waiting Times")]
+	[SerializeField] private float waitTime;
 	[SerializeField] private float endTime;
 	[SerializeField] private float warmTime = 2.0f;
-	[SerializeField] private int startLength;
+
+	public float WaitTime
+	{
+		get { return waitTime; }
+		set { waitTime = value; }
+	}
 
 	// Sequences
 	public GameSequence mPlayerSequence;
@@ -33,11 +45,10 @@ public class GameManager : Singleton<GameManager>
 	private void Warm()
 	{
 		StateManager.Instance.State = GameState.Warm;
-		this.WaitAndCallback(this.warmTime, () => {
+		WaitingMan.Instance.WaitAndCallback(this.warmTime, () => {
 			this.StartEnemySequence();
 			this.ShowEnemySequence();
 		});
-		// StartCoroutine(WarmCoroutine());
 	}
 
 	private void Restart()
@@ -45,29 +56,22 @@ public class GameManager : Singleton<GameManager>
 		this.Start();
 	}
 
-	// private IEnumerator WarmCoroutine()
-	// {
-	// 	yield return new WaitForSeconds(this.warmTime);
-	// 	this.StartEnemySequence();
-	// 	this.ShowEnemySequence();
-	// }
-
-	public void VerifyPlayerInput(GameButton button)
+	public void VerifyPlayerInput(string buttonName)
 	{
 		// Correct:
-		if (this.mEnemySequence.IsSameButton(playerIndex, button))
+		if (this.mEnemySequence.IsSameActor(playerIndex, buttonName))
 		{
 			Debug.Log("Well Done!!");
 			// Increment sequences index
 			playerIndex++;
 			// Add button to player sequence
-			this.mPlayerSequence.AddButton(button);
+			// this.mPlayerSequence.AddActor(button);
 			// If last in sequence
 			if (playerIndex == this.mEnemySequence.length)
 			{
 				// Add one button to enemy sequence and show
 				StateManager.Instance.State = GameState.Correct;
-				this.WaitAndCallback(this.endTime, () => {
+				WaitingMan.Instance.WaitAndCallback(this.endTime, () => {
 					this.RestartPlayer();
 					this.IncrementEnemySequence();
 					this.ShowEnemySequence();
@@ -81,7 +85,7 @@ public class GameManager : Singleton<GameManager>
 			Debug.Log("You loser!");
 			StateManager.Instance.State = GameState.Incorrect;
 			// Wait and Restart game
-			this.WaitAndCallback(this.endTime, () => {
+			WaitingMan.Instance.WaitAndCallback(this.endTime, () => {
 				this.Restart();
 			});
 		}
@@ -102,35 +106,14 @@ public class GameManager : Singleton<GameManager>
 
 	private void IncrementEnemySequence()
 	{
-		GameButton button = this.GetRandomButton();
-		this.mEnemySequence.AddButton(button);
-	}
-
-	private GameButton GetRandomButton()
-	{
-		int randomIndex = Random.Range(0, ButtonsManager.Instance.numButtons);
-		GameButton button = ButtonsManager.Instance.mButtons[randomIndex];
-		return button;
+		ShipActorController actor = this.ship.GetRandomActor();
+		this.mEnemySequence.AddActor(actor);
 	}
 
 	private void ShowEnemySequence() 
 	{
 		StateManager.Instance.State = GameState.Enemy;
-		ButtonsManager.Instance.ShowSequence(this.mEnemySequence.sequence.ToArray());
+		this.ship.ShowSequence(this.mEnemySequence.sequence.ToArray());
 	}
 
-	#region Callback Helper
-
-	private void WaitAndCallback(float time, Callback callback)
-	{
-		StartCoroutine(WaitAndCallbackCoroutine(time, callback));
-	}
-
-	private IEnumerator WaitAndCallbackCoroutine(float time, Callback callback)
-	{
-		yield return new WaitForSeconds(time);
-		callback();
-	}
-	
-	#endregion
 }
