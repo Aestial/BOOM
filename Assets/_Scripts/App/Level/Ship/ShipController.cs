@@ -8,6 +8,8 @@ public class ShipController : MonoBehaviour
 	
 	private Notifier notifier;
 
+	public delegate void DisplayCallback();
+
 	void OnEnable()
     {
 		// Subscribe to Actors Events
@@ -28,10 +30,7 @@ public class ShipController : MonoBehaviour
 
 	void Start ()
 	{
-		for (int i = 0; i < this.actors.Length; i++)
-		{
-			this.actors[i].id = i;
-		}
+		this.InitializeActors();
 	}
 
 	public ShipActorController GetRandomActor()
@@ -42,27 +41,42 @@ public class ShipController : MonoBehaviour
 		return actor;
 	}
 	
-	public void ShowSequence(ShipActorController[] sequence)
+	public void DisplaySequence(ShipActorController[] sequence, DisplayCallback callback)
 	{
-		StartCoroutine(this.ShowSequenceCoroutine(sequence));
+		StartCoroutine(this.DisplaySequenceCoroutine(sequence, callback));
 	}
 
-	private void VerifyInput(string name)
+	private void InitializeActors()
 	{
-		GameManager.Instance.VerifyPlayerInput(name);
+		for (int i = 0; i < this.actors.Length; i++)
+		{
+			this.actors[i].id = i;
+		}
+	}
+
+	private void EnableActors(bool enabled)
+	{
+		for (int i = 0; i < this.actors.Length; i++)
+		{
+			this.actors[i].enabled = enabled;
+		}
 	}
 
 	private void SubscribeToActors(bool subscribe)
 	{
-		for (int i = 1; i < this.actors.Length; i++)
+		for (int i = 0; i < this.actors.Length; i++)
 		{
 			ShipActorController actor = this.actors[i];
-			
-			if(subscribe)
-				actor.OnClicked += VerifyInput;
+			if (subscribe)
+				actor.OnClicked += CheckInput;
 			else 
-				actor.OnClicked -= VerifyInput;
+				actor.OnClicked -= CheckInput;
 		}
+	}
+
+	private void CheckInput(string name)
+	{
+		GameManager.Instance.CheckPlayerInput(name);
 	}
 
 	private void HandleOnStateEnter (params object[] args)
@@ -71,15 +85,15 @@ public class ShipController : MonoBehaviour
 		switch(state)
 		{
 			case GameState.Player:
-				// this.EnableButtons(true);
+				this.EnableActors(true);
 				break;
 			default:
-				// this.EnableButtons(false);
+				this.EnableActors(false);
 				break;
 		}
-	}	
+	}
 
-	private IEnumerator ShowSequenceCoroutine(ShipActorController[] sequence) 
+	private IEnumerator DisplaySequenceCoroutine(ShipActorController[] sequence, DisplayCallback callback) 
 	{
 		float waitTime = GameManager.Instance.WaitTime;
 		yield return new WaitForSeconds(waitTime);
@@ -92,7 +106,7 @@ public class ShipController : MonoBehaviour
 			actor.Illuminate(false);
 			yield return new WaitForSeconds(waitTime/2);
 		}
-		StateManager.Instance.State = GameState.Player;
+		callback();
 	}
 	
 	private void OnDestroy()

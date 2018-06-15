@@ -24,12 +24,12 @@ public class MessagesManager : MonoBehaviour
 
 	private void UpdateMessage(GameState state) 
 	{
-		messagesText.text = "";
-		for (int i = 0; i < messagesData.messages.Length; i++)
+		this.messagesText.text = "";
+		for (int i = 0; i < this.messagesData.messages.Length; i++)
 		{
-			if (messagesData.messages[i].state == state)
+			if (this.messagesData.messages[i].state == state)
 			{
-				messagesText.text = messagesData.messages[i].message;
+				this.messagesText.text = this.messagesData.messages[i].message;
 			}
 		}
 	}

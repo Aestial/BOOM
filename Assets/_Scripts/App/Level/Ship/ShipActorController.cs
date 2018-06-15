@@ -6,10 +6,12 @@ public class ShipActorController : MonoBehaviour
 {
 	[SerializeField] Color color;
 	[SerializeField] float emissionIntensity;
+	[SerializeField] AudioClip soundFX;
 
 	private Material material;
 
 	public int id;
+	public new bool enabled;
 
 	public delegate void ClickAction(string name);
     public event ClickAction OnClicked;
@@ -20,22 +22,36 @@ public class ShipActorController : MonoBehaviour
 		this.Set();
 		this.Illuminate(false);
 	}
-	
 	void OnMouseDown()
 	{
-		// Debug.Log("Pressed: " + this.gameObject.name);
-		this.Push(true);
-		this.Illuminate(true);
+		if (this.enabled)
+		{
+			// Debug.Log("Pressed: " + this.gameObject.name);
+			this.Push(true);
+			this.Illuminate(true);
+		}
   	}
 	
 	void OnMouseUp()
 	{
-		Debug.Log("Active: " + this.gameObject.name);
-		this.Push(false);
-		this.Illuminate(false);
-		// Execute suscripted events:
-		if(OnClicked != null)
-			OnClicked(this.gameObject.name);
+		if (this.enabled)
+		{
+			// Debug.Log("Active: " + this.gameObject.name);
+			this.Push(false);
+			this.Illuminate(false);
+			this.PlaySound();
+			// Execute suscripted events:
+			if(OnClicked != null)
+				OnClicked(this.gameObject.name);
+		}
+	}
+
+	public void Illuminate(bool on)
+	{
+		if (on) 
+			this.material.EnableKeyword("_EMISSION");
+		else
+			this.material.DisableKeyword("_EMISSION");
 	}
 
 	private void Set()
@@ -52,11 +68,9 @@ public class ShipActorController : MonoBehaviour
 			this.transform.localPosition -= new Vector3(0.0f, 0.15f);
 	}
 
-	public void Illuminate(bool on)
+	private void PlaySound()
 	{
-		if (on) 
-			this.material.EnableKeyword("_EMISSION");
-		else
-			this.material.DisableKeyword("_EMISSION");
+		AudioManager.Instance.PlayOneShoot(this.soundFX);
 	}
+
 }

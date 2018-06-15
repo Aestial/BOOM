@@ -5,12 +5,18 @@ using UnityEngine;
 public class GameSequence
 {
 	public int length;
-	public List <ShipActorController> sequence;
+	public List <ShipActorController> list;
 
 	public GameSequence () 
 	{
 		this.length = 0;
-		this.sequence = new List<ShipActorController>();
+		this.list = new List<ShipActorController>();
+	}
+
+	public void AddActor (ShipActorController actor) 
+	{
+		this.length++;
+		this.list.Add(actor);
 	}
 
 	public bool IsSameActor (int index, string otherName)
@@ -19,16 +25,13 @@ public class GameSequence
 		return actor.name == otherName;
 	}
 
-	public void AddActor (ShipActorController actor) 
+	public ShipActorController[] GetArray()
 	{
-		this.length++;
-		this.sequence.Add(actor);
-		// Posible test??
-		//int listLenght = this.sequence.ToArray().Length;
-	}
+		return this.list.ToArray();
+	}	
 
 	private ShipActorController GetActor(int index) 
 	{
-		return this.sequence[index];
+		return this.list[index];
 	}
 }

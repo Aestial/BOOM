@@ -16,39 +16,61 @@ public class GameManager : Singleton<GameManager>
 	[SerializeField] private float endTime;
 	[SerializeField] private float warmTime = 2.0f;
 
+	// Sequence
+	private GameSequence sequence;
+	private int index;
+
+	private delegate void Callback();
+
 	public float WaitTime
 	{
 		get { return waitTime; }
 		set { waitTime = value; }
 	}
 
-	// Sequences
-	public GameSequence mPlayerSequence;
-	public GameSequence mEnemySequence;
-	public int playerIndex;
-
-	private delegate void Callback();
-
 	// Use this for initialization
 	void Start () 
 	{
 		StateManager.Instance.State = GameState.Start;
 		// Sequences
-		this.mPlayerSequence = new GameSequence();
-		this.mEnemySequence = new GameSequence();
+		this.sequence = new GameSequence();
 		// Restart helpers
-		this.playerIndex = 0;		
+		this.index = 0;		
 		// Warm and Start
 		this.Warm();
 	}
-
-	private void Warm()
+	
+	public void CheckPlayerInput(string buttonName)
 	{
-		StateManager.Instance.State = GameState.Warm;
-		WaitingMan.Instance.WaitAndCallback(this.warmTime, () => {
-			this.StartEnemySequence();
-			this.ShowEnemySequence();
-		});
+		// Correct:
+		if (this.sequence.IsSameActor(this.index, buttonName))
+		{
+			// Increment sequences index
+			this.index++;
+			// Debug.Log("Correct actor in sequence!");
+
+			// If last in sequence
+			if (this.index == this.sequence.length)
+			{
+				// Add one button to enemy sequence and show
+				StateManager.Instance.State = GameState.Correct;
+				WaitingMan.Instance.WaitAndCallback(this.endTime, () => {
+					this.RestartPlayer();
+					this.IncrementSequence();
+					this.DisplaySequence();
+				});
+			}	
+		}
+		// Incorrect:
+		else
+		{
+			StateManager.Instance.State = GameState.Incorrect;
+			// Wait and Restart game
+			WaitingMan.Instance.WaitAndCallback(this.endTime, () => {
+				this.Restart();
+			});
+			// Debug.Log("Incorrect actor :(");
+		}
 	}
 
 	private void Restart()
@@ -56,64 +78,43 @@ public class GameManager : Singleton<GameManager>
 		this.Start();
 	}
 
-	public void VerifyPlayerInput(string buttonName)
-	{
-		// Correct:
-		if (this.mEnemySequence.IsSameActor(playerIndex, buttonName))
-		{
-			Debug.Log("Well Done!!");
-			// Increment sequences index
-			playerIndex++;
-			// Add button to player sequence
-			// this.mPlayerSequence.AddActor(button);
-			// If last in sequence
-			if (playerIndex == this.mEnemySequence.length)
-			{
-				// Add one button to enemy sequence and show
-				StateManager.Instance.State = GameState.Correct;
-				WaitingMan.Instance.WaitAndCallback(this.endTime, () => {
-					this.RestartPlayer();
-					this.IncrementEnemySequence();
-					this.ShowEnemySequence();
-				});
-				
-			}
-		}
-		// Incorrect:
-		else
-		{
-			Debug.Log("You loser!");
-			StateManager.Instance.State = GameState.Incorrect;
-			// Wait and Restart game
-			WaitingMan.Instance.WaitAndCallback(this.endTime, () => {
-				this.Restart();
-			});
-		}
-	}
-
 	private void RestartPlayer()
 	{
-		this.playerIndex = 0;
+		this.index = 0;
 	}
 
-	private void StartEnemySequence() 
+	private void Warm()
+	{
+		StateManager.Instance.State = GameState.Warm;
+		WaitingMan.Instance.WaitAndCallback(this.warmTime, () => {
+			this.InitializeSequence();
+			this.DisplaySequence();
+		});
+	}
+
+	private void InitializeSequence() 
 	{
 		for (int i = 0; i < this.startLength; i++)
 		{
-			this.IncrementEnemySequence();
+			this.IncrementSequence();
 		}
 	}
 
-	private void IncrementEnemySequence()
+	private void IncrementSequence()
 	{
 		ShipActorController actor = this.ship.GetRandomActor();
-		this.mEnemySequence.AddActor(actor);
+		this.sequence.AddActor(actor);
 	}
 
-	private void ShowEnemySequence() 
+	private void DisplaySequence() 
 	{
 		StateManager.Instance.State = GameState.Enemy;
-		this.ship.ShowSequence(this.mEnemySequence.sequence.ToArray());
+		this.ship.DisplaySequence(this.sequence.GetArray(), this.DisplaySequenceCallback);
+	}
+
+	private void DisplaySequenceCallback()
+	{
+		StateManager.Instance.State = GameState.Player;
 	}
 
 }

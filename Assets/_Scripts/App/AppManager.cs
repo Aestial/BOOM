@@ -58,7 +58,6 @@ public class AppManager : Singleton<AppManager>
 	// Update is called once per frame
 	void Update () 
 	{
-		// Input
 		this.CheckInput();
 	}
 
@@ -81,32 +80,21 @@ public class AppManager : Singleton<AppManager>
 	private void CheckInput()
 	{
 		// KEYBOARD
-
 		// Get Next Scene
 		if (Input.GetKeyUp(KeyCode.Plus)) 
 		{
-			if (this.mCurrentScene < this.mScenesLength - 1) 
-			{
+			if (this.mCurrentScene < this.mScenesLength - 1)
 				this.ChangeScene(this.mCurrentScene + 1);
-			} 
-			else 
-			{
-				this.ChangeScene(0);
-			}
-			
+			else
+				this.ChangeScene(0);			
 		}
 		// Get Previous Scene
 		if (Input.GetKeyUp(KeyCode.Minus)) 
 		{
 			if (this.mCurrentScene > 0) 
-			{
 				this.ChangeScene(this.mCurrentScene - 1);
-			} 
 			else 
-			{
 				this.ChangeScene(this.mScenesLength - 1);
-			}
-			
 		}	
 	}
 

@@ -6,6 +6,33 @@ public class WaitingMan : Singleton<WaitingMan>
 {
 	public delegate void Callback();
 
+	#region Singleton 
+	
+	public bool iAmFirst;
+
+    void Awake()
+    {
+       DontDestroyOnLoad(Instance);
+
+       AudioManager[] audioManagers = FindObjectsOfType(typeof(AudioManager)) as AudioManager[];
+
+       if(audioManagers.Length > 1)
+       {
+           for(int i = 0; i < audioManagers.Length; i++)
+           {
+               if(!audioManagers[i].iAmFirst)
+               {
+                   DestroyImmediate(audioManagers[i].gameObject);
+               }
+           }
+       }
+       else
+       {
+           iAmFirst = true;
+       }
+    }
+	#endregion
+
 	public void WaitAndCallback(float time, Callback callback)
 	{
 		StartCoroutine(WaitAndCallbackCoroutine(time, callback));
