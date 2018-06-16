@@ -12,13 +12,15 @@ public class AppManager : Singleton<AppManager>
 	[SerializeField] private int mScenesLength;
 	private int mCurrentScene;
 	
-	#region Don't Destroy OnLoad Singleton
+	
 
 	public bool iAmFirst;
 
     void Awake()
     {
-       DontDestroyOnLoad(Instance);
+	   #region Don't Destroy OnLoad Singleton
+
+	   DontDestroyOnLoad(Instance);
 
        AppManager[] appManagers = FindObjectsOfType(typeof(AppManager)) as AppManager[];
 
@@ -36,10 +38,10 @@ public class AppManager : Singleton<AppManager>
        {
            iAmFirst = true;
        }
+
+	   #endregion
     }
 
-	#endregion
-	
 	// Use this for initialization
 	void Start () 
 	{
