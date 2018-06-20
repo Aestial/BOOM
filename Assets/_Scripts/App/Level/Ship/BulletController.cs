@@ -16,21 +16,12 @@ public class BulletController : MonoBehaviour
 	private float time;
 	private new MeshRenderer renderer;
 
-	// Use this for initialization
 	void Start () 
 	{
 		this.renderer = this.GetComponent<MeshRenderer>();
 		this.renderer.enabled = false;
-		this.StartAnimation();
+		this.trail.enabled = false;
 	}
-
-	// void Update () 
-	// {
-	// 	if (Input.GetKeyDown(KeyCode.Space))
-	// 	{
-	// 		this.Shoot();
-	// 	}
-	// }
 
 	public void Shoot()
 	{
@@ -44,9 +35,6 @@ public class BulletController : MonoBehaviour
 
 	private IEnumerator AnimationCoroutine()
 	{
-		this.time = 0.0f;
-		this.renderer.enabled = true;
-
 		Vector3 startPosition = this.startPoint.position;
 		Vector3 endPosition = this.endPoint.position;
 
@@ -55,6 +43,12 @@ public class BulletController : MonoBehaviour
 
 		float trailStartScale = this.startPoint.localScale.x;
 		float trailEndScale = this.endPoint.localScale.x;
+		
+		this.time = 0.0f;
+		this.renderer.enabled = true;
+		this.trail.enabled = true;
+
+		yield return null;
 			
 		while (true)
 		{
@@ -77,7 +71,13 @@ public class BulletController : MonoBehaviour
 	private void AnimationEndCallback()
 	{
 		Debug.Log("Bullet Animation End");
+
 		this.renderer.enabled = false;
+		this.trail.enabled = false;
+
+		this.transform.position = this.startPoint.position;
+		this.transform.localScale = this.startPoint.localScale;
+
 		if (this.AnimationEnd != null)
 			this.AnimationEnd();
 	}

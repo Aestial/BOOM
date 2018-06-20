@@ -7,7 +7,8 @@ public class ExplosionController : MonoBehaviour
 {
 	[SerializeField] private AudioClip audioFX;
 	[SerializeField] private float audioDelay;
-	[SerializeField] private float enableDelay;
+	[SerializeField] private float enableVideoDelay;
+	[SerializeField] private float disableVideoDelay;
 	[SerializeField] private Sprite sprite;
 	[SerializeField] private VideoPlayer videoPlayer;
 
@@ -27,27 +28,21 @@ public class ExplosionController : MonoBehaviour
 	void OnEnable()
     {
 		this.SubscribeToBullets(true);
+		this.videoPlayer.loopPointReached += VideoEndReached;
+
     }
     
     void OnDisable()
     {
 		this.SubscribeToBullets(false);
+		this.videoPlayer.loopPointReached -= VideoEndReached;
     }
-
-	void Update () 
-	{
-		if (Input.GetKeyDown(KeyCode.Space))
-		{
-			this.Explode();
-		}
-	}
 
 	public void Explode()
 	{
 		this.count = 0;
-		this.videoPlayer.Stop();
 		this.videoPlayer.Play();
-		WaitingMan.Instance.WaitAndCallback(this.enableDelay, () =>{
+		WaitingMan.Instance.WaitAndCallback(this.enableVideoDelay, () =>{
 			this.renderer.enabled = true;
 		});
 		WaitingMan.Instance.WaitAndCallback(this.audioDelay, () => {
@@ -76,5 +71,12 @@ public class ExplosionController : MonoBehaviour
 		}
 	}
 
+	private void VideoEndReached(VideoPlayer vp)
+	{
+		WaitingMan.Instance.WaitAndCallback(this.disableVideoDelay, () =>{
+			vp.Stop();
+			this.renderer.enabled = false;
+		});
+	}
 
 }
