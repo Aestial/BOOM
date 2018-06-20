@@ -12,14 +12,13 @@ public class ExplosionController : MonoBehaviour
 	[SerializeField] private Sprite sprite;
 	[SerializeField] private VideoPlayer videoPlayer;
 
-	[SerializeField] private BulletController[] bullets;
-
-	private int count = 0;
 	private new SpriteRenderer renderer;
+
+	public delegate void EndReachedAction();
+	public event EndReachedAction OnEndReached;
 	
 	void Start () 
 	{
-		this.count = 0;
 		this.renderer = this.GetComponent<SpriteRenderer>();
 		this.renderer.sprite = this.sprite;
 		this.renderer.enabled = false;
@@ -27,20 +26,17 @@ public class ExplosionController : MonoBehaviour
 
 	void OnEnable()
     {
-		this.SubscribeToBullets(true);
 		this.videoPlayer.loopPointReached += VideoEndReached;
 
     }
     
     void OnDisable()
     {
-		this.SubscribeToBullets(false);
 		this.videoPlayer.loopPointReached -= VideoEndReached;
     }
 
 	public void Explode()
 	{
-		this.count = 0;
 		this.videoPlayer.Play();
 		WaitingMan.Instance.WaitAndCallback(this.enableVideoDelay, () =>{
 			this.renderer.enabled = true;
@@ -50,32 +46,15 @@ public class ExplosionController : MonoBehaviour
 		});
 	}
 
-	private void SubscribeToBullets(bool subscribe)
-	{
-		for (int i = 0; i < this.bullets.Length; i++)
-		{
-			BulletController actor = this.bullets[i];
-			if (subscribe)
-				actor.AnimationEnd += CountToExplode;
-			else 
-				actor.AnimationEnd -= CountToExplode;
-		}
-	}
-
-	private void CountToExplode() 
-	{
-		this.count++;
-		if (this.count >= this.bullets.Length)
-		{
-			this.Explode();
-		}
-	}
-
 	private void VideoEndReached(VideoPlayer vp)
 	{
 		WaitingMan.Instance.WaitAndCallback(this.disableVideoDelay, () =>{
 			vp.Stop();
 			this.renderer.enabled = false;
+			if (this.OnEndReached != null)
+			{
+				this.OnEndReached();
+			}
 		});
 	}
 

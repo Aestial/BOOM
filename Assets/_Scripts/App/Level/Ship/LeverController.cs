@@ -21,25 +21,18 @@ public class LeverController : MonoBehaviour
 
 	void OnMouseDown()
 	{
-		if (this.enabled)
-		{
-			// Debug.Log("Pressed: " + this.gameObject.name);
-			this.Pull(true);
-			this.PlaySound(this.pullSoundFX);
-			// Execute suscripted events:
-			if(this.OnClicked != null)
-				this.OnClicked();
-		}
-  	}
+		this.Pull(true);
+		this.PlaySound(this.pullSoundFX);
+		
+		// Execute suscripted events:
+		if(this.OnClicked != null && this.enabled)
+			this.OnClicked();
+	}
 	
 	void OnMouseUp()
 	{
-		if (this.enabled)
-		{
-			// Debug.Log("Active: " + this.gameObject.name);
-			this.Pull(false);
-			this.PlaySound(this.releaseSoundFX);
-		}
+		this.Pull(false);
+		this.PlaySound(this.releaseSoundFX);
 	}
 
 	private void Set()

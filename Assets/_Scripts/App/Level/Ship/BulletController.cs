@@ -70,8 +70,6 @@ public class BulletController : MonoBehaviour
 
 	private void AnimationEndCallback()
 	{
-		Debug.Log("Bullet Animation End");
-
 		this.renderer.enabled = false;
 		this.trail.enabled = false;
 

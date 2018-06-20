@@ -6,27 +6,18 @@ public class ShipController : MonoBehaviour
 {
 	[SerializeField] private ShipActorController[] actors;
 	[SerializeField] private LeverController lever;
-	// TODO: CHANGE THIS SHIT
-	[SerializeField] private BulletController[] bullets;
+	[SerializeField] private GunController gun;
+	[SerializeField] private EnergyBarController energyBar;
+	[SerializeField] private HealthDisplayController healthDisplay;
 	
 	private Notifier notifier;
 
+	private float energyAmount;
+
 	public delegate void DisplayCallback();
 
-	void OnEnable()
-    {
-		// Subscribe to Actors Events
-		this.SubscribeToActors(true);
-		this.lever.OnClicked += LeverAction;
-
-    }
-    
-    void OnDisable()
-    {
-		// Unsubscribe from Actors Events
-		this.SubscribeToActors(false);
-		this.lever.OnClicked -= LeverAction;
-    }
+	public delegate void ExplosionEndAction();
+	public event ExplosionEndAction OnExplosionEnd;
 
 	void Awake () 
 	{
@@ -39,6 +30,34 @@ public class ShipController : MonoBehaviour
 		this.InitializeActors();
 	}
 
+
+	void OnEnable()
+    {
+		// Subscribe to Actors Events
+		this.SubscribeToActors(true);
+		this.lever.OnClicked += LeverAction;
+		this.gun.OnExplosionEnd += ExplosionCallback;
+    }
+    
+    void OnDisable()
+    {
+		// Unsubscribe from Actors Events
+		this.SubscribeToActors(false);
+		this.lever.OnClicked -= LeverAction;
+		this.gun.OnExplosionEnd -= ExplosionCallback;
+    }
+	
+	public void DisplaySequence(ShipActorController[] sequence, DisplayCallback callback)
+	{
+		StartCoroutine(this.DisplaySequenceCoroutine(sequence, callback));
+	}
+
+	public void EnableLever(bool enabled)
+	{
+		this.lever.enabled = enabled;
+		
+	}
+
 	public ShipActorController GetRandomActor()
 	{
 		int actorLength = this.actors.Length;
@@ -46,10 +65,29 @@ public class ShipController : MonoBehaviour
 		ShipActorController actor = this.actors[randomIndex];
 		return actor;
 	}
-	
-	public void DisplaySequence(ShipActorController[] sequence, DisplayCallback callback)
+
+	public void SetHealth(int health)
 	{
-		StartCoroutine(this.DisplaySequenceCoroutine(sequence, callback));
+		this.healthDisplay.Set(health);
+	}
+
+	private void CheckInput(string name)
+	{
+		GameManager.Instance.CheckPlayerInput(name);
+	}
+
+
+	private void EnableActors(bool enabled)
+	{
+		for (int i = 0; i < this.actors.Length; i++)
+		{
+			this.actors[i].enabled = enabled;
+		}
+	}
+
+	private void ExplosionEndCallback()
+	{
+
 	}
 
 	private void InitializeActors()
@@ -60,13 +98,15 @@ public class ShipController : MonoBehaviour
 		}
 	}
 
-	private void EnableActors(bool enabled)
+	private void LeverAction()
 	{
-		for (int i = 0; i < this.actors.Length; i++)
-		{
-			this.actors[i].enabled = enabled;
-		}
-		this.lever.enabled = enabled;
+		this.gun.Shoot();
+	}
+
+	public void SetEnergy(float value)
+	{
+		this.energyAmount = value;
+		this.energyBar.Set(value);
 	}
 
 	private void SubscribeToActors(bool subscribe)
@@ -81,18 +121,12 @@ public class ShipController : MonoBehaviour
 		}
 	}
 
-	private void CheckInput(string name)
+	private void ExplosionCallback()
 	{
-		GameManager.Instance.CheckPlayerInput(name);
-	}
-
-	private void LeverAction()
-	{
-		for (int i = 0; i < this.bullets.Length; i++)
+		if(this.OnExplosionEnd != null)
 		{
-			this.bullets[i].Shoot();
+			this.OnExplosionEnd();
 		}
-		// GameManager.Instance.Shoot();
 	}
 
 	private void HandleOnStateEnter (params object[] args)

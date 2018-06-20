@@ -13,6 +13,12 @@ public enum GameState
     Correct,
     /** Winner focus */
     Incorrect,
+    /** Wait for shoot and destroy */
+    Shoot,
+    /** Winner, planet destroyed */
+    Winner,
+    /** Loser, ship destroyed */
+    Loser,
     /** Game end */
     End
 }
