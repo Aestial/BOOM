@@ -5,6 +5,9 @@ using UnityEngine;
 public class ShipController : MonoBehaviour 
 {
 	[SerializeField] private ShipActorController[] actors;
+	[SerializeField] private LeverController lever;
+	// TODO: CHANGE THIS SHIT
+	[SerializeField] private BulletController[] bullets;
 	
 	private Notifier notifier;
 
@@ -14,12 +17,15 @@ public class ShipController : MonoBehaviour
     {
 		// Subscribe to Actors Events
 		this.SubscribeToActors(true);
+		this.lever.OnClicked += LeverAction;
+
     }
     
     void OnDisable()
     {
 		// Unsubscribe from Actors Events
 		this.SubscribeToActors(false);
+		this.lever.OnClicked -= LeverAction;
     }
 
 	void Awake () 
@@ -60,6 +66,7 @@ public class ShipController : MonoBehaviour
 		{
 			this.actors[i].enabled = enabled;
 		}
+		this.lever.enabled = enabled;
 	}
 
 	private void SubscribeToActors(bool subscribe)
@@ -77,6 +84,15 @@ public class ShipController : MonoBehaviour
 	private void CheckInput(string name)
 	{
 		GameManager.Instance.CheckPlayerInput(name);
+	}
+
+	private void LeverAction()
+	{
+		for (int i = 0; i < this.bullets.Length; i++)
+		{
+			this.bullets[i].Shoot();
+		}
+		// GameManager.Instance.Shoot();
 	}
 
 	private void HandleOnStateEnter (params object[] args)

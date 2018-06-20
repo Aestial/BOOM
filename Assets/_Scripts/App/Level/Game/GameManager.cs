@@ -10,11 +10,14 @@ public class GameManager : Singleton<GameManager>
 
 	// Gameplay parameters
 	[Header("Parameters")]
+	[SerializeField] private int maxLifes = 3;
 	[SerializeField] private int startLength;
 	[Header("Waiting Times")]
 	[SerializeField] private float waitTime;
 	[SerializeField] private float endTime;
 	[SerializeField] private float warmTime = 2.0f;
+
+	private int lifes;
 
 	// Sequence
 	private GameSequence sequence;
@@ -32,10 +35,11 @@ public class GameManager : Singleton<GameManager>
 	void Start () 
 	{
 		StateManager.Instance.State = GameState.Start;
+		this.lifes = this.maxLifes;
 		// Sequences
 		this.sequence = new GameSequence();
 		// Restart helpers
-		this.index = 0;		
+		this.index = 0;
 		// Warm and Start
 		this.Warm();
 	}

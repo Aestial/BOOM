@@ -35,7 +35,10 @@ public class WaitingMan : Singleton<WaitingMan>
 
 	public void WaitAndCallback(float time, Callback callback)
 	{
-		StartCoroutine(WaitAndCallbackCoroutine(time, callback));
+        if (time > 0.0f)
+		    StartCoroutine(WaitAndCallbackCoroutine(time, callback));
+        else
+            callback();
 	}
 
 	private IEnumerator WaitAndCallbackCoroutine(float time, Callback callback)

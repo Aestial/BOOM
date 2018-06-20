@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class ShipActorController : MonoBehaviour 
 {
-	[SerializeField] Color color;
-	[SerializeField] float emissionIntensity;
-	[SerializeField] AudioClip soundFX;
+	[SerializeField] private Color color;
+	[SerializeField] private float emissionIntensity;
+	[SerializeField] private AudioClip soundFX;
 
 	private Material material;
 
@@ -41,8 +41,8 @@ public class ShipActorController : MonoBehaviour
 			this.Illuminate(false);
 			this.PlaySound();
 			// Execute suscripted events:
-			if(OnClicked != null)
-				OnClicked(this.gameObject.name);
+			if(this.OnClicked != null)
+				this.OnClicked(this.gameObject.name);
 		}
 	}
 
