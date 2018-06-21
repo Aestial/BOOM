@@ -60,7 +60,7 @@ public class StateManager : Singleton<StateManager>
 
 	void OnDestroy()
     {
-        notifier.UnsubcribeAll();
+        this.notifier.UnsubcribeAll();
     }
     
 }

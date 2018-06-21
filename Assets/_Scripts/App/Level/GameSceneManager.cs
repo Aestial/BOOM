@@ -7,10 +7,19 @@ public class GameSceneManager : MonoBehaviour
 	[SerializeField] private AudioClip audioLoop;
 	[SerializeField] private int mainMenuScene = 1;
 
+	[SerializeField] private Canvas endCanvas;
+
 	private const string audioLoopName = "LevelLoop";
+	private Notifier notifier;
+
+	void Awake()
+	{
+		this.notifier = new Notifier();
+		this.notifier.Subscribe(StateManager.ON_STATE_ENTER, HandleOnStateEnter);
+	}
 
 	void Start()
-	{
+	{	
 		AudioManager.Instance.PlayLoop2D(audioLoopName, this.audioLoop);
 	}
 
@@ -18,17 +27,27 @@ public class GameSceneManager : MonoBehaviour
 	{
 		switch(actionName)
 		{
-			case "Back":
+			case "Menu":
 				AppManager.Instance.ChangeScene(this.mainMenuScene);
+				break;
+			case "PlayAgain":
+				GameManager.Instance.Restart();
 				break;
 			default:
 				Debug.Log("Triggered default, please check button onClick actions");
 				break;
 		}
 	}
+
+	private void HandleOnStateEnter (params object[] args)
+	{
+		GameState state = (GameState)args[0];
+		this.endCanvas.enabled = state == GameState.End;
+	}
 	
 	void OnDestroy()
 	{
 		AudioManager.Instance.StopLoop(audioLoopName);
+		this.notifier.UnsubcribeAll();
 	}
 }

@@ -24,16 +24,22 @@ public class HealthDisplayController : MonoBehaviour
 	{
 		for (int i = 0; i < this.healthLights.Length; i++)
 		{
-			this.healthLights[i].Illuminate(false);
+			this.healthLights[i].Illuminate(true);
 		}
 	}
 
 	public void Set(int amount)
 	{
-		// this.Reset();
-		for (int i = this.maxAmount; i > amount; i--)
+		if (amount >= maxAmount)
 		{
-			this.healthLights[i].Illuminate(false);
+			this.Reset();
+		}
+		else
+		{
+			for (int i = this.maxAmount; i > amount; i--)
+			{
+				this.healthLights[i].Illuminate(false);
+			}
 		}
 		this.amount = amount;
 	}

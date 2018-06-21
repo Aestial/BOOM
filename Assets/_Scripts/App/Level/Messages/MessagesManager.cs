@@ -33,4 +33,8 @@ public class MessagesManager : MonoBehaviour
 			}
 		}
 	}
+	void OnDestroy()
+	{
+		this.notifier.UnsubcribeAll();
+	}
 }

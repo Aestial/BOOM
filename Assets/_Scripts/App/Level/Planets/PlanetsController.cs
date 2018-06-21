@@ -13,9 +13,9 @@ public class PlanetsController : MonoBehaviour
 		this.planet.enabled = true;
 	}
 
-	public void DestroyPlanet()
+	public void SetPlanet(bool on)
 	{
-		this.planet.enabled = false;
+		this.planet.enabled = on;
 	}
 	
 	void Update () 

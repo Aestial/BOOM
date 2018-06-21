@@ -108,16 +108,27 @@ public class GameManager : Singleton<GameManager>
 				if (this.health <= 0)
 				{
 					StateManager.Instance.State = GameState.Loser;
+					WaitingMan.Instance.WaitAndCallback(this.endTime, () => {
+						StateManager.Instance.State = GameState.End;
+					});
 				}
 				else 
 				{
-					this.Restart();
+					this.RestartSequence();
 				}
 			});
 		}
 	}
 
-	private void Restart()
+	public void Restart()
+	{
+		this.Awake();
+		this.Start();
+		this.SetHealth(this.health);
+		this.planets.SetPlanet(true);
+	}
+
+	private void RestartSequence()
 	{
 		this.Start();
 	}
@@ -163,8 +174,11 @@ public class GameManager : Singleton<GameManager>
 
 	private void ExplosionCallback()
 	{
-		this.planets.DestroyPlanet();
+		this.planets.SetPlanet(false);
 		StateManager.Instance.State = GameState.Winner;
+		WaitingMan.Instance.WaitAndCallback(this.endTime, () => {
+			StateManager.Instance.State = GameState.End;
+		});
 	}
 
 	private void IncrementEnergy()
@@ -182,6 +196,11 @@ public class GameManager : Singleton<GameManager>
 	private void DecreaseHealth()
 	{
 		this.health--;
+		this.SetHealth(this.health);
+	}
+
+	private void SetHealth(int health)
+	{
 		this.ship.SetHealth(this.health - 1);
 	}
 
