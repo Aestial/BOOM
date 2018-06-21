@@ -9,6 +9,8 @@ public class ShipController : MonoBehaviour
 	[SerializeField] private GunController gun;
 	[SerializeField] private EnergyBarController energyBar;
 	[SerializeField] private HealthDisplayController healthDisplay;
+	[Header("FX")]
+	[SerializeField] private ParticleSystem fireFX;
 	
 	private Notifier notifier;
 
@@ -27,6 +29,7 @@ public class ShipController : MonoBehaviour
 
 	void Start ()
 	{
+		this.SetFire(false);
 		this.InitializeActors();
 	}
 
@@ -85,9 +88,12 @@ public class ShipController : MonoBehaviour
 		}
 	}
 
-	private void ExplosionEndCallback()
+	private void SetFire(bool on)
 	{
-
+		if (on)
+			this.fireFX.Play();
+		else
+			this.fireFX.Stop();
 	}
 
 	private void InitializeActors()
@@ -132,13 +138,11 @@ public class ShipController : MonoBehaviour
 	private void HandleOnStateEnter (params object[] args)
 	{
 		GameState state = (GameState)args[0];
+		this.EnableActors(state == GameState.Player);
+		this.SetFire(state == GameState.Loser || state == GameState.End);
 		switch(state)
 		{
-			case GameState.Player:
-				this.EnableActors(true);
-				break;
 			default:
-				this.EnableActors(false);
 				break;
 		}
 	}
