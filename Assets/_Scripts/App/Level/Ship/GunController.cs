@@ -6,6 +6,8 @@ public class GunController : MonoBehaviour
 {
 	[SerializeField] private BulletController[] bullets;
 	[SerializeField] private ExplosionController explosion;
+
+	[SerializeField] private AudioClip shootSoundFX;
 	
 	private int count;
 
@@ -33,6 +35,7 @@ public class GunController : MonoBehaviour
 
 	public void Shoot()
 	{
+		AudioManager.Instance.PlayOneShoot2D(this.shootSoundFX);
 		for (int i = 0; i < this.bullets.Length; i++)
 		{
 			this.bullets[i].Shoot();

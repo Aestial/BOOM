@@ -18,6 +18,11 @@ public class GameManager : Singleton<GameManager>
 	[SerializeField] private float endTime;
 	[SerializeField] private float warmTime = 2.0f;
 
+	// Gameplay Sounds
+	[Header("Sound FX")]
+	[SerializeField] AudioClip correctAudioFX;
+	[SerializeField] AudioClip incorrectAudioFX;
+
 	private float energy;
 	private int currentStep;
 	// [SerializeField] 
@@ -81,6 +86,7 @@ public class GameManager : Singleton<GameManager>
 			{
 				// Add one button to enemy sequence and show
 				StateManager.Instance.State = GameState.Correct;
+				AudioManager.Instance.PlayOneShoot2D(this.correctAudioFX);
 				this.IncrementEnergy();
 				if (this.currentStep == this.energySteps)
 				{
@@ -102,6 +108,7 @@ public class GameManager : Singleton<GameManager>
 		else
 		{
 			StateManager.Instance.State = GameState.Incorrect;
+			AudioManager.Instance.PlayOneShoot2D(this.incorrectAudioFX);
 			// Wait and Restart game
 			WaitingMan.Instance.WaitAndCallback(this.endTime, () => {
 				this.DecreaseHealth();

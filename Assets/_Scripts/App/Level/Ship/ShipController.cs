@@ -155,9 +155,9 @@ public class ShipController : MonoBehaviour
 		{
 			int index = sequence[i].id;
 			ShipActorController actor = this.actors[index];
-			actor.Illuminate(true);
+			actor.Show(true);
 			yield return new WaitForSeconds(waitTime);
-			actor.Illuminate(false);
+			actor.Show(false);
 			yield return new WaitForSeconds(waitTime/2);
 		}
 		callback();
