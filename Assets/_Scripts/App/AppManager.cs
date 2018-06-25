@@ -12,8 +12,6 @@ public class AppManager : Singleton<AppManager>
 	[SerializeField] private int mScenesLength;
 	private int mCurrentScene;
 	
-	
-
 	public bool iAmFirst;
 
     void Awake()

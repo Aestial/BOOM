@@ -26,7 +26,11 @@ public class LeverController : MonoBehaviour
 		
 		// Execute suscripted events:
 		if(this.OnClicked != null && this.enabled)
+		{
+			this.enabled = false;
 			this.OnClicked();
+		}
+			
 	}
 	
 	void OnMouseUp()
@@ -37,6 +41,7 @@ public class LeverController : MonoBehaviour
 
 	private void Set()
 	{
+		this.enabled = false;
 		this.transform.parent.localEulerAngles = Vector3.zero;
 	}
 

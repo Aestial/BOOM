@@ -11,11 +11,6 @@ public class GunController : MonoBehaviour
 	
 	private int count;
 
-	public delegate void ExplosionEndAction();
-	public event ExplosionEndAction OnExplosionEnd;
-
-	// public delegate void 
-
 	void Start () 
 	{
 		this.count = 0;
@@ -24,14 +19,12 @@ public class GunController : MonoBehaviour
 	void OnEnable()
     {
 		this.SubscribeToBullets(true);
-		this.explosion.OnEndReached += ExplosionCallback;
-    }
+	 }
     
     void OnDisable()
     {
 		this.SubscribeToBullets(false);
-		this.explosion.OnEndReached -= ExplosionCallback;
-    }
+  }
 
 	public void Shoot()
 	{
@@ -57,21 +50,13 @@ public class GunController : MonoBehaviour
 	private void CountToExplode() 
 	{
 		this.count++;
+		Debug.Log("Bullet hit");
 		if (this.count >= this.bullets.Length)
 		{
 			this.explosion.Explode();
 		}
 	}
 
-	private void ExplosionCallback()
-	{
-		if(this.OnExplosionEnd != null)
-		{
-			this.OnExplosionEnd();
-		}
-	}
-	
-	// Update is called once per frame
 	void Update () 
 	{
 		if(Input.GetKeyDown(KeyCode.Space))

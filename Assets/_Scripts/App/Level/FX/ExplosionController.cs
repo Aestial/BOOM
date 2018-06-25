@@ -7,55 +7,78 @@ public class ExplosionController : MonoBehaviour
 {
 	[SerializeField] private AudioClip audioFX;
 	[SerializeField] private float audioDelay;
-	[SerializeField] private float enableVideoDelay;
-	[SerializeField] private float disableVideoDelay;
-	[SerializeField] private Sprite sprite;
-	[SerializeField] private VideoPlayer videoPlayer;
-
+	[SerializeField] private new AnimationController animation;
+	
+	private SpriteRenderer[] sprites;
 	private new SpriteRenderer renderer;
 
-	public delegate void EndReachedAction();
-	public event EndReachedAction OnEndReached;
+	private Notifier notifier;
+	public const string ON_EXPLOSION_PEAK = "OnExplosionPeak";
+	public const string ON_EXPLOSION_END = "OnExplosionEnd";
+
+	void Awake ()
+	{
+		this.notifier = new Notifier();
+	}
 	
 	void Start () 
 	{
-		this.renderer = this.GetComponent<SpriteRenderer>();
-		this.renderer.sprite = this.sprite;
-		this.renderer.enabled = false;
+		this.sprites = this.animation.GetComponentsInChildren<SpriteRenderer>();
+		this.EnableSprites(false);
 	}
 
 	void OnEnable()
     {
-		this.videoPlayer.loopPointReached += VideoEndReached;
-
+		this.animation.OnAnimationEnd += this.AnimationEndReached;
+		this.animation.OnAnimationEvent += this.AnimationEventReached;
     }
     
     void OnDisable()
     {
-		this.videoPlayer.loopPointReached -= VideoEndReached;
+		this.animation.OnAnimationEnd -= AnimationEndReached;
+		this.animation.OnAnimationEvent -= this.AnimationEventReached;
     }
 
 	public void Explode()
 	{
-		this.videoPlayer.Play();
-		WaitingMan.Instance.WaitAndCallback(this.enableVideoDelay, () =>{
-			this.renderer.enabled = true;
-		});
+		this.EnableSprites(true);
+		this.animation.Play();
 		WaitingMan.Instance.WaitAndCallback(this.audioDelay, () => {
 			AudioManager.Instance.PlayOneShoot2D(this.audioFX);
 		});
 	}
 
-	private void VideoEndReached(VideoPlayer vp)
+	private void EnableSprites(bool enabled)
 	{
-		WaitingMan.Instance.WaitAndCallback(this.disableVideoDelay, () =>{
-			vp.Stop();
-			this.renderer.enabled = false;
-			if (this.OnEndReached != null)
-			{
-				this.OnEndReached();
-			}
-		});
+		for (int i = 0; i < this.sprites.Length; i++)
+		{
+			this.sprites[i].enabled = enabled;
+		}
+	}
+
+	private void AnimationEventReached(string name)
+	{
+		// Debug.Log("Explosion Controller: Peak animation reached.");
+		switch(name)
+		{
+			case "Peak":
+			this.notifier.Notify(ON_EXPLOSION_PEAK);
+			break;
+			default:
+			break;
+		}
+	}
+
+	private void AnimationEndReached()
+	{
+		// Debug.Log("Explosion Controller: End of animation reached.");
+		this.EnableSprites(false);
+		this.notifier.Notify(ON_EXPLOSION_END);
+	}
+
+	void OnDestroy ()
+	{
+		this.notifier.UnsubcribeAll();
 	}
 
 }

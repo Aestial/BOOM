@@ -42,13 +42,17 @@ public class GameManager : Singleton<GameManager>
 		set { waitTime = value; }
 	}
 
+	private Notifier notifier;
+
 	void Awake ()
 	{
+		this.notifier = new Notifier();
+		this.notifier.Subscribe(ExplosionController.ON_EXPLOSION_PEAK, HandleOnExplosionPeak);
+		this.notifier.Subscribe(ExplosionController.ON_EXPLOSION_END, HandleOnExplosionEnd);
 		this.health = this.maxHealth;
 		this.energySteps = this.planets.energySteps;
 	}
-
-	// Use this for initialization
+	
 	void Start () 
 	{
 		StateManager.Instance.State = GameState.Start;
@@ -61,18 +65,6 @@ public class GameManager : Singleton<GameManager>
 		// Warm and Start
 		this.Warm();
 	}
-
-	void OnEnable()
-    {
-		// Subscribe to Actors Events
-		this.ship.OnExplosionEnd += ExplosionCallback;
-    }
-    
-    void OnDisable()
-    {
-		// Unsubscribe from Actors Events
-		this.ship.OnExplosionEnd += ExplosionCallback;
-    }
 	
 	public void CheckPlayerInput(string buttonName)
 	{
@@ -101,7 +93,6 @@ public class GameManager : Singleton<GameManager>
 						this.DisplaySequence();
 					});	
 				}
-				
 			}	
 		}
 		// Incorrect:
@@ -179,15 +170,6 @@ public class GameManager : Singleton<GameManager>
 		StateManager.Instance.State = GameState.Player;
 	}
 
-	private void ExplosionCallback()
-	{
-		this.planets.SetPlanet(false);
-		StateManager.Instance.State = GameState.Winner;
-		WaitingMan.Instance.WaitAndCallback(this.endTime, () => {
-			StateManager.Instance.State = GameState.End;
-		});
-	}
-
 	private void IncrementEnergy()
 	{
 		this.currentStep++;
@@ -211,4 +193,21 @@ public class GameManager : Singleton<GameManager>
 		this.ship.SetHealth(this.health - 1);
 	}
 
+	private void HandleOnExplosionPeak(params object[] args)
+	{
+		this.planets.SetPlanet(false);
+	}
+
+	private void HandleOnExplosionEnd(params object[] args)
+	{
+		StateManager.Instance.State = GameState.Winner;
+		WaitingMan.Instance.WaitAndCallback(this.endTime, () => {
+			StateManager.Instance.State = GameState.End;
+		});
+	}
+
+	void OnDestroy ()
+	{
+		this.notifier.UnsubcribeAll();
+	}
 }

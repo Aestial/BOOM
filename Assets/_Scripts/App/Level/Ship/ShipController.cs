@@ -18,9 +18,6 @@ public class ShipController : MonoBehaviour
 
 	public delegate void DisplayCallback();
 
-	public delegate void ExplosionEndAction();
-	public event ExplosionEndAction OnExplosionEnd;
-
 	void Awake () 
 	{
 		this.notifier = new Notifier();
@@ -39,7 +36,6 @@ public class ShipController : MonoBehaviour
 		// Subscribe to Actors Events
 		this.SubscribeToActors(true);
 		this.lever.OnClicked += LeverAction;
-		this.gun.OnExplosionEnd += ExplosionCallback;
     }
     
     void OnDisable()
@@ -47,7 +43,6 @@ public class ShipController : MonoBehaviour
 		// Unsubscribe from Actors Events
 		this.SubscribeToActors(false);
 		this.lever.OnClicked -= LeverAction;
-		this.gun.OnExplosionEnd -= ExplosionCallback;
     }
 	
 	public void DisplaySequence(ShipActorController[] sequence, DisplayCallback callback)
@@ -58,7 +53,6 @@ public class ShipController : MonoBehaviour
 	public void EnableLever(bool enabled)
 	{
 		this.lever.enabled = enabled;
-		
 	}
 
 	public ShipActorController GetRandomActor()
@@ -107,6 +101,7 @@ public class ShipController : MonoBehaviour
 	private void LeverAction()
 	{
 		this.gun.Shoot();
+		this.SetEnergy(0);
 	}
 
 	public void SetEnergy(float value)
@@ -124,14 +119,6 @@ public class ShipController : MonoBehaviour
 				actor.OnClicked += CheckInput;
 			else 
 				actor.OnClicked -= CheckInput;
-		}
-	}
-
-	private void ExplosionCallback()
-	{
-		if(this.OnExplosionEnd != null)
-		{
-			this.OnExplosionEnd();
 		}
 	}
 
