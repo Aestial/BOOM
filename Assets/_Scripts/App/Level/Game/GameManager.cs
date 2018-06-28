@@ -14,7 +14,8 @@ public class GameManager : Singleton<GameManager>
 	[SerializeField] private int maxHealth = 3;
 	[SerializeField] private int startLength;
 	[Header("Waiting Times")]
-	[SerializeField] private float waitTime;
+	[SerializeField] private float startWaitTime;
+	[SerializeField] private float waitTimeDecrement;
 	[SerializeField] private float endTime;
 	[SerializeField] private float warmTime = 2.0f;
 
@@ -25,8 +26,10 @@ public class GameManager : Singleton<GameManager>
 
 	private float energy;
 	private int currentStep;
+	private int currentLength;
+	private float currentWaitTime;
 	// [SerializeField] 
-	private int energySteps;
+	private int currentEnergySteps;
 	
 	private int health;
 	
@@ -38,34 +41,37 @@ public class GameManager : Singleton<GameManager>
 
 	public float WaitTime
 	{
-		get { return waitTime; }
-		set { waitTime = value; }
+		get { return currentWaitTime; }
+		set { currentWaitTime = value; }
 	}
 
 	private Notifier notifier;
 
 	void Awake ()
-	{
+	{	
 		this.notifier = new Notifier();
 		this.notifier.Subscribe(ExplosionController.ON_EXPLOSION_PEAK, HandleOnExplosionPeak);
 		this.notifier.Subscribe(ExplosionController.ON_EXPLOSION_END, HandleOnExplosionEnd);
-		this.health = this.maxHealth;
-		this.energySteps = this.planets.energySteps;
 	}
 	
 	void Start () 
 	{
-		StateManager.Instance.State = GameState.Start;
-		// Sequences
-		this.sequence = new GameSequence();
-		// Restart helpers
-		this.index = 0;
-		this.currentStep = 0;
-		this.SetEnergy(this.currentStep);
-		// Warm and Start
-		this.Warm();
+		this.Restart();
 	}
-	
+
+	void Update ()
+	{
+		if (Input.GetKeyDown(KeyCode.R))
+		{
+			this.Restart();
+		}
+		if (Input.GetKeyDown(KeyCode.P))
+		{
+			this.planets.Destroy();
+			this.NewPlanet();
+		}
+	}
+
 	public void CheckPlayerInput(string buttonName)
 	{
 		// Correct:
@@ -80,7 +86,7 @@ public class GameManager : Singleton<GameManager>
 				StateManager.Instance.State = GameState.Correct;
 				AudioManager.Instance.PlayOneShoot2D(this.correctAudioFX);
 				this.IncrementEnergy();
-				if (this.currentStep == this.energySteps)
+				if (this.currentStep == this.currentEnergySteps)
 				{
 					StateManager.Instance.State = GameState.Shoot;
 					this.ship.EnableLever(true);
@@ -88,7 +94,7 @@ public class GameManager : Singleton<GameManager>
 				else
 				{
 					WaitingMan.Instance.WaitAndCallback(this.endTime, () => {
-						this.RestartPlayer();
+						this.index = 0;
 						this.IncrementSequence();
 						this.DisplaySequence();
 					});	
@@ -120,20 +126,39 @@ public class GameManager : Singleton<GameManager>
 
 	public void Restart()
 	{
-		this.Awake();
-		this.Start();
+		this.health = this.maxHealth;
+		this.currentEnergySteps = this.planets.startEnergySteps;
+		this.currentLength = this.startLength;
+		this.currentWaitTime = this.startWaitTime;
 		this.SetHealth(this.health);
-		this.planets.SetPlanet(true);
+		this.planets.Restart();
+		this.NewPlanet();
+	}
+
+	private void NewPlanet()
+	{
+		this.planets.NewPlanet();
+		if (this.planets.count > 0)
+		{
+			this.currentWaitTime -= this.waitTimeDecrement / this.planets.count;
+			Debug.Log(this.currentWaitTime);
+			this.currentLength = this.startLength + this.planets.count / 2;
+			this.currentEnergySteps = this.planets.startEnergySteps + this.planets.count / 3;
+		}
+		this.RestartSequence();
 	}
 
 	private void RestartSequence()
 	{
-		this.Start();
-	}
-
-	private void RestartPlayer()
-	{
+		StateManager.Instance.State = GameState.Start;
+		// Sequences
+		this.sequence = new GameSequence();
+		// Restart helpers
 		this.index = 0;
+		this.currentStep = 0;
+		this.SetEnergy(this.currentStep);
+		// Warm and Start
+		this.Warm();
 	}
 
 	private void Warm()
@@ -147,7 +172,7 @@ public class GameManager : Singleton<GameManager>
 
 	private void InitializeSequence() 
 	{
-		for (int i = 0; i < this.startLength; i++)
+		for (int i = 0; i < this.currentLength; i++)
 		{
 			this.IncrementSequence();
 		}
@@ -178,7 +203,7 @@ public class GameManager : Singleton<GameManager>
 
 	private void SetEnergy(int step)
 	{
-		this.energy = step/(float)this.energySteps;
+		this.energy = step/(float)this.currentEnergySteps;
 		this.ship.SetEnergy(this.energy);
 	}
 
@@ -195,14 +220,14 @@ public class GameManager : Singleton<GameManager>
 
 	private void HandleOnExplosionPeak(params object[] args)
 	{
-		this.planets.SetPlanet(false);
+		this.planets.Destroy();
 	}
 
 	private void HandleOnExplosionEnd(params object[] args)
 	{
 		StateManager.Instance.State = GameState.Winner;
 		WaitingMan.Instance.WaitAndCallback(this.endTime, () => {
-			StateManager.Instance.State = GameState.End;
+			this.NewPlanet();
 		});
 	}
 

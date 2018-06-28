@@ -50,7 +50,6 @@ public class GunController : MonoBehaviour
 	private void CountToExplode() 
 	{
 		this.count++;
-		Debug.Log("Bullet hit");
 		if (this.count >= this.bullets.Length)
 		{
 			this.explosion.Explode();
@@ -59,7 +58,7 @@ public class GunController : MonoBehaviour
 
 	void Update () 
 	{
-		if(Input.GetKeyDown(KeyCode.Space))
+		if(Input.GetKeyDown(KeyCode.S))
 		{
 			this.Shoot();
 		}	

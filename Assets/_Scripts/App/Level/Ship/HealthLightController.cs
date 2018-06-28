@@ -16,7 +16,6 @@ public class HealthLightController : MonoBehaviour
 	{
 		this.material = this.lightMesh.material;
 		this.Set();
-		this.Illuminate(true);
 	}
 
 	public void Illuminate(bool on)

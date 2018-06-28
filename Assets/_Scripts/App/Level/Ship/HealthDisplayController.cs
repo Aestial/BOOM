@@ -5,8 +5,6 @@ using UnityEngine;
 public class HealthDisplayController : MonoBehaviour 
 {
 	[SerializeField] HealthLightController[] healthLights;
-
-	// [Range(0, 3)][SerializeField] 
 	private int amount;
 	private int maxAmount;
 
@@ -14,15 +12,11 @@ public class HealthDisplayController : MonoBehaviour
 	{
 		this.maxAmount = this.healthLights.Length - 1;
 		this.amount = this.maxAmount;
-		// Turn all on
-		WaitingMan.Instance.WaitAndCallback(0.01f, () => {
-			this.Set(amount);
-		});	
 	}
 
 	private void Reset()
 	{
-		for (int i = 0; i < this.healthLights.Length; i++)
+		for (int i = 0; i <= this.maxAmount; i++)
 		{
 			this.healthLights[i].Illuminate(true);
 		}
@@ -30,17 +24,20 @@ public class HealthDisplayController : MonoBehaviour
 
 	public void Set(int amount)
 	{
-		if (amount >= maxAmount)
-		{
-			this.Reset();
-		}
-		else
-		{
-			for (int i = this.maxAmount; i > amount; i--)
+		WaitingMan.Instance.WaitAndCallback(0.01f, () => {
+			if (amount >= this.maxAmount)
 			{
-				this.healthLights[i].Illuminate(false);
+				this.Reset();
 			}
-		}
-		this.amount = amount;
+			else
+			{
+				for (int i = this.maxAmount; i > amount; i--)
+				{
+					this.healthLights[i].Illuminate(false);
+				}
+			}
+			this.amount = amount;
+		});
+		
 	}
 }
