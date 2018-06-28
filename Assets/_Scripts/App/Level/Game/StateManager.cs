@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+
 public enum GameState
 {
     /** Game Start */
@@ -22,13 +23,14 @@ public enum GameState
     /** Game end */
     End
 }
+
 public class StateManager : Singleton<StateManager>
 {
     private GameState state;
     public GameState State
     {
-        get { return state; }
-        set { SetState(value); }
+        get { return this.state; }
+        set { this.SetState(value); }
     }
 
     private Notifier notifier;
@@ -37,25 +39,24 @@ public class StateManager : Singleton<StateManager>
 
     void Awake()
     {
-        notifier = new Notifier();
-        state = GameState.Start;
+        this.notifier = new Notifier();
     }
 
     private void SetState(GameState newState)
     {
-        OnExit(state);
-        state = newState;
-        OnEnter(state);
+        OnExit(this.state);
+        this.state = newState;
+        OnEnter(this.state);
     }
 
     private void OnEnter(GameState s)
     {
-		notifier.Notify(ON_STATE_ENTER, s);
+		this.notifier.Notify(ON_STATE_ENTER, s);
     }
 
 	private void OnExit(GameState s)
 	{
-		notifier.Notify(ON_STATE_EXIT, s);
+		this.notifier.Notify(ON_STATE_EXIT, s);
 	}
 
 	void OnDestroy()

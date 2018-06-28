@@ -7,6 +7,7 @@ public class GameSceneManager : MonoBehaviour
 	[SerializeField] private AudioClip audioLoop;
 	[SerializeField] private int mainMenuScene = 1;
 
+	[SerializeField] private Canvas startCanvas;
 	[SerializeField] private Canvas endCanvas;
 
 	private const string audioLoopName = "LevelLoop";
@@ -30,7 +31,8 @@ public class GameSceneManager : MonoBehaviour
 			case "Menu":
 				AppManager.Instance.ChangeScene(this.mainMenuScene);
 				break;
-			case "PlayAgain":
+			case "Play":
+			case "Again":
 				GameManager.Instance.Restart();
 				break;
 			default:
@@ -42,6 +44,7 @@ public class GameSceneManager : MonoBehaviour
 	private void HandleOnStateEnter (params object[] args)
 	{
 		GameState state = (GameState)args[0];
+		this.startCanvas.enabled = state == GameState.Start;
 		this.endCanvas.enabled = state == GameState.End;
 	}
 	

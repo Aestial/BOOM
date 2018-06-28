@@ -56,7 +56,7 @@ public class GameManager : Singleton<GameManager>
 	
 	void Start () 
 	{
-		this.Restart();
+		StateManager.Instance.State = GameState.Start;
 	}
 
 	void Update ()
@@ -141,7 +141,6 @@ public class GameManager : Singleton<GameManager>
 		if (this.planets.count > 0)
 		{
 			this.currentWaitTime -= this.waitTimeDecrement / this.planets.count;
-			Debug.Log(this.currentWaitTime);
 			this.currentLength = this.startLength + this.planets.count / 2;
 			this.currentEnergySteps = this.planets.startEnergySteps + this.planets.count / 3;
 		}
@@ -150,7 +149,6 @@ public class GameManager : Singleton<GameManager>
 
 	private void RestartSequence()
 	{
-		StateManager.Instance.State = GameState.Start;
 		// Sequences
 		this.sequence = new GameSequence();
 		// Restart helpers

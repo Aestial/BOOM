@@ -34,7 +34,7 @@ public class PlanetsController : MonoBehaviour
 		int length = this.data.templates.Length;
 		int index = Random.Range(0, length);
 		this.planet.sprite = this.data.templates[index].sprite;
-		Debug.Log("New Planet: " + this.data.templates[index].name + " Index: " + index);
+		// Debug.Log("New Planet: " + this.data.templates[index].name + " Index: " + index);
 	}
 	
 	public void Destroy()
