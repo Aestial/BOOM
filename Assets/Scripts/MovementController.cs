@@ -56,8 +56,8 @@ public class MovementController : MonoBehaviour
                 Vector2 relativePosition = GetScreenRelativePosition(touch.position);
 
                 // Debug
-                Debug.Log(touch.position);
-                Debug.Log(touch.deltaPosition);
+                // Debug.Log(touch.position);
+                // Debug.Log(touch.deltaPosition);
                 m_PositionDebug.text.text = m_PositionDebug.prefix + relativePosition;
 
                 // Position
