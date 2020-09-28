@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class InfoManager : MonoBehaviour 
 {
-	[SerializeField] private AudioClip audioLoop;
+	[SerializeField] private AudioClip audioLoop = default;
 	[SerializeField] private int mainMenuScene = 1;
 
 	private const string audioLoopName = "MainMenuLoop";

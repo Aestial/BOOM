@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class IntroManager : MonoBehaviour 
 {
-	[SerializeField] private AudioClip audioLoop;
+	[SerializeField] private AudioClip audioLoop = default;
 	private const string audioLoopName = "MainMenuLoop";
 
-	[SerializeField] private float waitTime;
+	[SerializeField] private float waitTime = 8.0f;
 	
 	void Start () 
 	{

@@ -1,28 +1,26 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class GameManager : Singleton<GameManager> 
 {
 	// Gameplay objects
 	[Header("Objects")]
-	[SerializeField] private ShipController ship;
-	[SerializeField] private PlanetsController planets;
+	[SerializeField] private ShipController ship = default;
+	[SerializeField] private PlanetsController planets = default;
 
 	// Gameplay parameters
 	[Header("Parameters")]
 	[SerializeField] private int maxHealth = 3;
-	[SerializeField] private int startLength;
+	[SerializeField] private int startLength = 2;
 	[Header("Waiting Times")]
-	[SerializeField] private float startWaitTime;
-	[SerializeField] private float waitTimeDecrement;
-	[SerializeField] private float endTime;
+	[SerializeField] private float startWaitTime = 0.5f;
+	[SerializeField] private float waitTimeDecrement = 0.2f;
+	[SerializeField] private float endTime = 0.8f;
 	[SerializeField] private float warmTime = 2.0f;
 
 	// Gameplay Sounds
 	[Header("Sound FX")]
-	[SerializeField] AudioClip correctAudioFX;
-	[SerializeField] AudioClip incorrectAudioFX;
+	[SerializeField] AudioClip correctAudioFX = default;
+	[SerializeField] AudioClip incorrectAudioFX = default;
 
 	private float energy;
 	private int currentStep;
@@ -49,9 +47,9 @@ public class GameManager : Singleton<GameManager>
 
 	void Awake ()
 	{	
-		this.notifier = new Notifier();
-		this.notifier.Subscribe(ExplosionController.ON_EXPLOSION_PEAK, HandleOnExplosionPeak);
-		this.notifier.Subscribe(ExplosionController.ON_EXPLOSION_END, HandleOnExplosionEnd);
+		notifier = new Notifier();
+		notifier.Subscribe(ExplosionController.ON_EXPLOSION_PEAK, HandleOnExplosionPeak);
+		notifier.Subscribe(ExplosionController.ON_EXPLOSION_END, HandleOnExplosionEnd);
 	}
 	
 	void Start () 
@@ -63,40 +61,40 @@ public class GameManager : Singleton<GameManager>
 	{
 		if (Input.GetKeyDown(KeyCode.R))
 		{
-			this.Restart();
+			Restart();
 		}
 		if (Input.GetKeyDown(KeyCode.P))
 		{
-			this.planets.Destroy();
-			this.NewPlanet();
+			planets.Destroy();
+			NewPlanet();
 		}
 	}
 
 	public void CheckPlayerInput(string buttonName)
 	{
 		// Correct:
-		if (this.sequence.IsSameActor(this.index, buttonName))
+		if (sequence.IsSameActor(index, buttonName))
 		{
 			// Increment sequences index
-			this.index++;
+			index++;
 			// If last in sequence
-			if (this.index == this.sequence.length)
+			if (index == sequence.length)
 			{
 				// Add one button to enemy sequence and show
 				StateManager.Instance.State = GameState.Correct;
-				AudioManager.Instance.PlayOneShoot2D(this.correctAudioFX);
-				this.IncrementEnergy();
-				if (this.currentStep == this.currentEnergySteps)
+				AudioManager.Instance.PlayOneShoot2D(correctAudioFX);
+				IncrementEnergy();
+				if (currentStep == currentEnergySteps)
 				{
 					StateManager.Instance.State = GameState.Shoot;
-					this.ship.EnableLever(true);
+					ship.EnableLever(true);
 				}
 				else
 				{
-					WaitingMan.Instance.WaitAndCallback(this.endTime, () => {
-						this.index = 0;
-						this.IncrementSequence();
-						this.DisplaySequence();
+					WaitingMan.Instance.WaitAndCallback(endTime, () => {
+						index = 0;
+						IncrementSequence();
+						DisplaySequence();
 					});	
 				}
 			}	
@@ -105,20 +103,20 @@ public class GameManager : Singleton<GameManager>
 		else
 		{
 			StateManager.Instance.State = GameState.Incorrect;
-			AudioManager.Instance.PlayOneShoot2D(this.incorrectAudioFX);
+			AudioManager.Instance.PlayOneShoot2D(incorrectAudioFX);
 			// Wait and Restart game
-			WaitingMan.Instance.WaitAndCallback(this.endTime, () => {
-				this.DecreaseHealth();
-				if (this.health <= 0)
+			WaitingMan.Instance.WaitAndCallback(endTime, () => {
+				DecreaseHealth();
+				if (health <= 0)
 				{
 					StateManager.Instance.State = GameState.Loser;
-					WaitingMan.Instance.WaitAndCallback(this.endTime, () => {
+					WaitingMan.Instance.WaitAndCallback(endTime, () => {
 						StateManager.Instance.State = GameState.End;
 					});
 				}
 				else 
 				{
-					this.RestartSequence();
+					RestartSequence();
 				}
 			});
 		}
@@ -126,66 +124,66 @@ public class GameManager : Singleton<GameManager>
 
 	public void Restart()
 	{
-		this.health = this.maxHealth;
-		this.currentEnergySteps = this.planets.startEnergySteps;
-		this.currentLength = this.startLength;
-		this.currentWaitTime = this.startWaitTime;
-		this.SetHealth(this.health);
-		this.planets.Restart();
-		this.NewPlanet();
+		health = maxHealth;
+		currentEnergySteps = planets.startEnergySteps;
+		currentLength = startLength;
+		currentWaitTime = startWaitTime;
+		SetHealth(health);
+		planets.Restart();
+		NewPlanet();
 	}
 
 	private void NewPlanet()
 	{
-		this.planets.NewPlanet();
-		if (this.planets.count > 0)
+		planets.NewPlanet();
+		if (planets.count > 0)
 		{
-			this.currentWaitTime -= this.waitTimeDecrement / this.planets.count;
-			this.currentLength = this.startLength + this.planets.count / 2;
-			this.currentEnergySteps = this.planets.startEnergySteps + this.planets.count / 3;
+			currentWaitTime -= waitTimeDecrement / planets.count;
+			currentLength = startLength + planets.count / 2;
+			currentEnergySteps = planets.startEnergySteps + planets.count / 3;
 		}
-		this.RestartSequence();
+		RestartSequence();
 	}
 
 	private void RestartSequence()
 	{
 		// Sequences
-		this.sequence = new GameSequence();
+		sequence = new GameSequence();
 		// Restart helpers
-		this.index = 0;
-		this.currentStep = 0;
-		this.SetEnergy(this.currentStep);
-		// Warm and Start
-		this.Warm();
+		index = 0;
+		currentStep = 0;
+		SetEnergy(currentStep);
+        // Warm and Start
+        Warm();
 	}
 
 	private void Warm()
 	{
 		StateManager.Instance.State = GameState.Warm;
-		WaitingMan.Instance.WaitAndCallback(this.warmTime, () => {
-			this.InitializeSequence();
-			this.DisplaySequence();
+		WaitingMan.Instance.WaitAndCallback(warmTime, () => {
+			InitializeSequence();
+			DisplaySequence();
 		});
 	}
 
 	private void InitializeSequence() 
 	{
-		for (int i = 0; i < this.currentLength; i++)
+		for (int i = 0; i < currentLength; i++)
 		{
-			this.IncrementSequence();
+			IncrementSequence();
 		}
 	}
 
 	private void IncrementSequence()
 	{
-		ShipActorController actor = this.ship.GetRandomActor();
-		this.sequence.AddActor(actor);
+		ShipActorController actor = ship.GetRandomActor();
+		sequence.AddActor(actor);
 	}
 
 	private void DisplaySequence() 
 	{
 		StateManager.Instance.State = GameState.Enemy;
-		this.ship.DisplaySequence(this.sequence.GetArray(), this.DisplaySequenceCallback);
+		ship.DisplaySequence(sequence.GetArray(), DisplaySequenceCallback);
 	}
 
 	private void DisplaySequenceCallback()
@@ -195,42 +193,42 @@ public class GameManager : Singleton<GameManager>
 
 	private void IncrementEnergy()
 	{
-		this.currentStep++;
-		this.SetEnergy(this.currentStep);
+		currentStep++;
+		SetEnergy(currentStep);
 	}
 
 	private void SetEnergy(int step)
 	{
-		this.energy = step/(float)this.currentEnergySteps;
-		this.ship.SetEnergy(this.energy);
+		energy = step/(float)currentEnergySteps;
+		ship.SetEnergy(energy);
 	}
 
 	private void DecreaseHealth()
 	{
-		this.health--;
-		this.SetHealth(this.health);
+		health--;
+		SetHealth(health);
 	}
 
 	private void SetHealth(int health)
 	{
-		this.ship.SetHealth(this.health - 1);
+		ship.SetHealth(this.health - 1);
 	}
 
 	private void HandleOnExplosionPeak(params object[] args)
 	{
-		this.planets.Destroy();
+		planets.Destroy();
 	}
 
 	private void HandleOnExplosionEnd(params object[] args)
 	{
 		StateManager.Instance.State = GameState.Winner;
-		WaitingMan.Instance.WaitAndCallback(this.endTime, () => {
-			this.NewPlanet();
+		WaitingMan.Instance.WaitAndCallback(endTime, () => {
+			NewPlanet();
 		});
 	}
 
 	void OnDestroy ()
 	{
-		this.notifier.UnsubcribeAll();
+		notifier.UnsubcribeAll();
 	}
 }

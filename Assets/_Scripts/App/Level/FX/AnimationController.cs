@@ -1,10 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class AnimationController : MonoBehaviour 
 {
-	[SerializeField] private string animationName;
+	[SerializeField] private string animationName = default;
 	private Animator animator;
 
 	public delegate void AnimationEventAction(string name);
@@ -15,32 +13,26 @@ public class AnimationController : MonoBehaviour
 
 	void Start ()
 	{
-		this.animator = this.GetComponent<Animator>();
+		animator = GetComponent<Animator>();
 	}
 
 	public void Play()
 	{
-		this.animator.Play(this.animationName, -1, 0f);
+		animator.Play(animationName, -1, 0f);
 	}
 
 	public void Stop()
 	{
-		this.animator.StopPlayback();
+		animator.StopPlayback();
 	}
 
 	public void AnimationEndReached()
 	{
-		if (this.OnAnimationEnd != null)
-		{
-			this.OnAnimationEnd();
-		}
-	}
+        OnAnimationEnd?.Invoke();
+    }
 
 	public void AnimationEvent(string name)
 	{
-		if (this.OnAnimationEvent != null)
-		{
-			this.OnAnimationEvent(name);
-		}
-	}
+        OnAnimationEvent?.Invoke(name);
+    }
 }

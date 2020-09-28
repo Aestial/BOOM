@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public enum ButtonAction
 {
@@ -10,10 +8,10 @@ public enum ButtonAction
 
 public class ShipActorController : MonoBehaviour 
 {
-	[SerializeField] private Color color;
-	[SerializeField] private float emissionIntensity;
-	[SerializeField] private AudioClip showSoundFX;
-	[SerializeField] private AudioClip pushSoundFX;
+	[SerializeField] private Color color = default;
+	[SerializeField] private float emissionIntensity = default;
+	[SerializeField] private AudioClip showSoundFX = default;
+	[SerializeField] private AudioClip pushSoundFX = default;
 
 	private Material material;
 
@@ -25,68 +23,62 @@ public class ShipActorController : MonoBehaviour
 
 	void Start () 
 	{
-		this.material = this.GetComponent<MeshRenderer>().material;
-		this.Set();
-		this.Illuminate(false);
+		material = GetComponent<MeshRenderer>().material;
+		Set();
+		Illuminate(false);
 	}
 	void OnMouseDown()
 	{
-		if (this.enabled)
+		if (enabled)
 		{
-			this.Push(true);
-			this.Illuminate(true);
+			Push(true);
+			Illuminate(true);
 		}
   	}
 	
 	void OnMouseUp()
 	{
-		if (this.enabled)
+		if (enabled)
 		{
-			this.Push(false);
-			this.Illuminate(false);
-			this.PlaySound(ButtonAction.Push, 1.18f);
-			this.PlaySound(ButtonAction.Show, 0.83f);
-			// Execute suscripted events:
-			if(this.OnClicked != null)
-				this.OnClicked(this.gameObject.name);
-		}
+			Push(false);
+			Illuminate(false);
+			PlaySound(ButtonAction.Push, 1.18f);
+			PlaySound(ButtonAction.Show, 0.83f);
+            // Execute suscripted events:
+            OnClicked?.Invoke(this.gameObject.name);
+        }
 	}
 
 	public void Show(bool on)
 	{
-		this.Illuminate(on);
+		Illuminate(on);
 		if (on)
-			this.PlaySound(ButtonAction.Show, 0.9f);
+			PlaySound(ButtonAction.Show, 0.9f);
 	}
 
 	public void Illuminate(bool on)
 	{
 		if (on) 
-			this.material.EnableKeyword("_EMISSION");
+			material.EnableKeyword("_EMISSION");
 		else
-			this.material.DisableKeyword("_EMISSION");
+			material.DisableKeyword("_EMISSION");
 	}
 
 	private void Set()
 	{
-		this.material.color = this.color;
-		this.material.SetColor("_EmissionColor", this.color * this.emissionIntensity);
+		material.color = this.color;
+		material.SetColor("_EmissionColor", this.color * this.emissionIntensity);
 	}
 
 	private void Push(bool on)
 	{
 		if (on)
-			this.transform.localPosition += new Vector3(0.0f, 0.15f);
+			transform.localPosition += new Vector3(0.0f, 0.15f);
 		else
-			this.transform.localPosition -= new Vector3(0.0f, 0.15f);
+			transform.localPosition -= new Vector3(0.0f, 0.15f);
 	}
 
-	private void PlaySound(ButtonAction action)
-	{
-		this.PlaySound(action, 1.0f);
-	}
-
-	private void PlaySound(ButtonAction action, float volume)
+    private void PlaySound(ButtonAction action, float volume)
 	{
 		AudioClip clip;
 		switch(action)

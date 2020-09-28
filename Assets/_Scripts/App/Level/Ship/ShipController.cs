@@ -4,13 +4,13 @@ using UnityEngine;
 
 public class ShipController : MonoBehaviour 
 {
-	[SerializeField] private ShipActorController[] actors;
-	[SerializeField] private LeverController lever;
-	[SerializeField] private GunController gun;
-	[SerializeField] private EnergyBarController energyBar;
-	[SerializeField] private HealthDisplayController healthDisplay;
+	[SerializeField] private ShipActorController[] actors = default;
+	[SerializeField] private LeverController lever = default;
+	[SerializeField] private GunController gun = default;
+	[SerializeField] private EnergyBarController energyBar = default;
+	[SerializeField] private HealthDisplayController healthDisplay =  default;
 	[Header("FX")]
-	[SerializeField] private ParticleSystem fireFX;
+	[SerializeField] private ParticleSystem fireFX = default;
 	
 	private Notifier notifier;
 

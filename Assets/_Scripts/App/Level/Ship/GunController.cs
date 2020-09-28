@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class GunController : MonoBehaviour 
 {
-	[SerializeField] private BulletController[] bullets;
-	[SerializeField] private ExplosionController explosion;
+	[SerializeField] private BulletController[] bullets = default;
+	[SerializeField] private ExplosionController explosion = default;
 
-	[SerializeField] private AudioClip shootSoundFX;
+	[SerializeField] private AudioClip shootSoundFX = default;
 	
 	private int count;
 

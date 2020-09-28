@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public enum MainMenuScenes
 {
@@ -11,7 +9,7 @@ public enum MainMenuScenes
 
 public class MainMenuManager : MonoBehaviour 
 {
-	[SerializeField] private AudioClip audioLoop;
+	[SerializeField] private AudioClip audioLoop = default;
 
 	private const string audioLoopName = "MainMenuLoop";
 

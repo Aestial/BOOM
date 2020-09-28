@@ -1,13 +1,10 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.Video;
+﻿using UnityEngine;
 
 public class ExplosionController : MonoBehaviour 
 {
-	[SerializeField] private AudioClip audioFX;
-	[SerializeField] private float audioDelay;
-	[SerializeField] private new AnimationController animation;
+	[SerializeField] private AudioClip audioFX = default;
+	[SerializeField] private float audioDelay = default;
+	[SerializeField] private new AnimationController animation = default;
 	
 	private SpriteRenderer[] sprites;
 	private new SpriteRenderer renderer;
@@ -18,41 +15,41 @@ public class ExplosionController : MonoBehaviour
 
 	void Awake ()
 	{
-		this.notifier = new Notifier();
+		notifier = new Notifier();
 	}
 	
 	void Start () 
 	{
-		this.sprites = this.animation.GetComponentsInChildren<SpriteRenderer>();
-		this.EnableSprites(false);
+		sprites = animation.GetComponentsInChildren<SpriteRenderer>();
+		EnableSprites(false);
 	}
 
 	void OnEnable()
     {
-		this.animation.OnAnimationEnd += this.AnimationEndReached;
-		this.animation.OnAnimationEvent += this.AnimationEventReached;
+		animation.OnAnimationEnd += AnimationEndReached;
+		animation.OnAnimationEvent += AnimationEventReached;
     }
     
     void OnDisable()
     {
-		this.animation.OnAnimationEnd -= AnimationEndReached;
-		this.animation.OnAnimationEvent -= this.AnimationEventReached;
+		animation.OnAnimationEnd -= AnimationEndReached;
+		animation.OnAnimationEvent -= AnimationEventReached;
     }
 
 	public void Explode()
 	{
-		this.EnableSprites(true);
-		this.animation.Play();
-		WaitingMan.Instance.WaitAndCallback(this.audioDelay, () => {
-			AudioManager.Instance.PlayOneShoot2D(this.audioFX);
+		EnableSprites(true);
+		animation.Play();
+		WaitingMan.Instance.WaitAndCallback(audioDelay, () => {
+			AudioManager.Instance.PlayOneShoot2D(audioFX);
 		});
 	}
 
 	private void EnableSprites(bool enabled)
 	{
-		for (int i = 0; i < this.sprites.Length; i++)
+		for (int i = 0; i < sprites.Length; i++)
 		{
-			this.sprites[i].enabled = enabled;
+			sprites[i].enabled = enabled;
 		}
 	}
 
@@ -62,7 +59,7 @@ public class ExplosionController : MonoBehaviour
 		switch(name)
 		{
 			case "Peak":
-			this.notifier.Notify(ON_EXPLOSION_PEAK);
+			notifier.Notify(ON_EXPLOSION_PEAK);
 			break;
 			default:
 			break;
@@ -72,13 +69,13 @@ public class ExplosionController : MonoBehaviour
 	private void AnimationEndReached()
 	{
 		// Debug.Log("Explosion Controller: End of animation reached.");
-		this.EnableSprites(false);
-		this.notifier.Notify(ON_EXPLOSION_END);
+		EnableSprites(false);
+		notifier.Notify(ON_EXPLOSION_END);
 	}
 
 	void OnDestroy ()
 	{
-		this.notifier.UnsubcribeAll();
+		notifier.UnsubcribeAll();
 	}
 
 }

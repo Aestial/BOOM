@@ -1,39 +1,37 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class HealthDisplayController : MonoBehaviour 
 {
-	[SerializeField] HealthLightController[] healthLights;
+	[SerializeField] HealthLightController[] healthLights = default;
 	private int amount;
 	private int maxAmount;
 
 	void Start () 
 	{
-		this.maxAmount = this.healthLights.Length - 1;
-		this.amount = this.maxAmount;
+		maxAmount = healthLights.Length - 1;
+		amount = maxAmount;
 	}
 
 	private void Reset()
 	{
-		for (int i = 0; i <= this.maxAmount; i++)
+		for (int i = 0; i <= maxAmount; i++)
 		{
-			this.healthLights[i].Illuminate(true);
+			healthLights[i].Illuminate(true);
 		}
 	}
 
 	public void Set(int amount)
 	{
 		WaitingMan.Instance.WaitAndCallback(0.01f, () => {
-			if (amount >= this.maxAmount)
+			if (amount >= maxAmount)
 			{
-				this.Reset();
+				Reset();
 			}
 			else
 			{
-				for (int i = this.maxAmount; i > amount; i--)
+				for (int i = maxAmount; i > amount; i--)
 				{
-					this.healthLights[i].Illuminate(false);
+					healthLights[i].Illuminate(false);
 				}
 			}
 			this.amount = amount;

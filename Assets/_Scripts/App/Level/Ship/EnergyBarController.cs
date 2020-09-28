@@ -13,11 +13,11 @@ public struct FillInfo
 [ExecuteInEditMode]
 public class EnergyBarController : MonoBehaviour 
 {
-	[SerializeField] private FillInfo empty;
-	[SerializeField] private Color medium;
-	[SerializeField] private FillInfo full;
+	[SerializeField] private FillInfo empty = default;
+	[SerializeField] private Color medium = default;
+	[SerializeField] private FillInfo full = default;
 
-	[SerializeField] private Image fillImage;
+	[SerializeField] private Image fillImage = default;
 
 	[Range(0.0f, 1.0f)]
 	[SerializeField] private float amount;

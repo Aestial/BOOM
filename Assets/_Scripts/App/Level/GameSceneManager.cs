@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class GameSceneManager : MonoBehaviour 
 {
-	[SerializeField] private AudioClip audioLoop;
+	[SerializeField] private AudioClip audioLoop = default;
 	[SerializeField] private int mainMenuScene = 1;
 
-	[SerializeField] private Canvas startCanvas;
-	[SerializeField] private Canvas endCanvas;
+	[SerializeField] private Canvas startCanvas = default;
+	[SerializeField] private Canvas endCanvas = default;
 
 	private const string audioLoopName = "LevelLoop";
 	private Notifier notifier;

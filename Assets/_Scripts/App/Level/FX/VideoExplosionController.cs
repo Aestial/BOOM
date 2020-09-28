@@ -1,16 +1,14 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Video;
 
 public class VideoExplosionController : MonoBehaviour 
 {
-	[SerializeField] private AudioClip audioFX;
-	[SerializeField] private float audioDelay;
-	[SerializeField] private float enableVideoDelay;
-	[SerializeField] private float disableVideoDelay;
-	[SerializeField] private Sprite sprite;
-	[SerializeField] private VideoPlayer videoPlayer;
+	[SerializeField] private AudioClip audioFX = default;
+	[SerializeField] private float audioDelay = default;
+	[SerializeField] private float enableVideoDelay = default;
+	[SerializeField] private float disableVideoDelay = default;
+	[SerializeField] private Sprite sprite = default;
+	[SerializeField] private VideoPlayer videoPlayer = default;
 
 	private new SpriteRenderer renderer;
 
@@ -19,43 +17,40 @@ public class VideoExplosionController : MonoBehaviour
 	
 	void Start () 
 	{
-		this.renderer = this.GetComponent<SpriteRenderer>();
-		this.renderer.sprite = this.sprite;
-		this.renderer.enabled = false;
+		renderer = GetComponent<SpriteRenderer>();
+		renderer.sprite = sprite;
+		renderer.enabled = false;
 	}
 
 	void OnEnable()
     {
-		this.videoPlayer.loopPointReached += VideoEndReached;
+		videoPlayer.loopPointReached += VideoEndReached;
 
     }
     
     void OnDisable()
     {
-		this.videoPlayer.loopPointReached -= VideoEndReached;
+		videoPlayer.loopPointReached -= VideoEndReached;
     }
 
 	public void Explode()
 	{
-		this.videoPlayer.Play();
-		WaitingMan.Instance.WaitAndCallback(this.enableVideoDelay, () =>{
-			this.renderer.enabled = true;
+		videoPlayer.Play();
+		WaitingMan.Instance.WaitAndCallback(enableVideoDelay, () =>{
+			renderer.enabled = true;
 		});
-		WaitingMan.Instance.WaitAndCallback(this.audioDelay, () => {
-			AudioManager.Instance.PlayOneShoot2D(this.audioFX);
+		WaitingMan.Instance.WaitAndCallback(audioDelay, () => {
+			AudioManager.Instance.PlayOneShoot2D(audioFX);
 		});
 	}
 
 	private void VideoEndReached(VideoPlayer vp)
 	{
-		WaitingMan.Instance.WaitAndCallback(this.disableVideoDelay, () =>{
+		WaitingMan.Instance.WaitAndCallback(disableVideoDelay, () =>{
 			vp.Stop();
-			this.renderer.enabled = false;
-			if (this.OnEndReached != null)
-			{
-				this.OnEndReached();
-			}
-		});
+			renderer.enabled = false;
+            OnEndReached?.Invoke();
+        });
 	}
 
 }

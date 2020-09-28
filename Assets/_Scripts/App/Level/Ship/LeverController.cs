@@ -3,10 +3,10 @@
 public class LeverController : MonoBehaviour 
 {
 
-	[SerializeField] private float maxRotation;
-	[SerializeField] private AudioClip pullSoundFX;
-	[SerializeField] private AudioClip releaseSoundFX;
-	[SerializeField] private GameObject helpCanvas;
+	[SerializeField] private float maxRotation = 30.0f;
+	[SerializeField] private AudioClip pullSoundFX = default;
+	[SerializeField] private AudioClip releaseSoundFX = default;
+	[SerializeField] private GameObject helpCanvas = default;
 
 	public new bool enabled
 	{
@@ -25,40 +25,41 @@ public class LeverController : MonoBehaviour
 	// Use this for initialization
 	void Start () 
 	{
-		this.Set();
+		Set();
 	}
 
 	void OnMouseDown()
+    {
+        Pull(true);
+        PlaySound(pullSoundFX);
+
+        // Execute suscripted events:
+        if (OnClicked == null || !enabled)
+        {
+            return;
+        }
+        enabled = false;
+        OnClicked();
+    }
+
+    void OnMouseUp()
 	{
-		this.Pull(true);
-		this.PlaySound(this.pullSoundFX);
-		
-		// Execute suscripted events:
-		if(this.OnClicked != null && this.enabled)
-		{
-			this.enabled = false;
-			this.OnClicked();
-		}
-	}
-	
-	void OnMouseUp()
-	{
-		this.Pull(false);
-		this.PlaySound(this.releaseSoundFX);
+		Pull(false);
+        PlaySound(releaseSoundFX);
 	}
 
 	private void Set()
 	{
-		this.enabled = false;
-		this.transform.parent.localEulerAngles = Vector3.zero;
+		enabled = false;
+		transform.parent.localEulerAngles = Vector3.zero;
 	}
 
 	private void Pull(bool on)
 	{
 		if (on)
-			this.transform.parent.localEulerAngles += new Vector3(this.maxRotation, 0);
+			transform.parent.localEulerAngles += new Vector3(this.maxRotation, 0);
 		else
-			this.transform.parent.localEulerAngles -= new Vector3(this.maxRotation, 0);
+			transform.parent.localEulerAngles -= new Vector3(this.maxRotation, 0);
 	}
 	
 	private void PlaySound (AudioClip clip) 
