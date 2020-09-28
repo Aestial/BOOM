@@ -21,7 +21,7 @@ public class GameSceneManager : MonoBehaviour
 
 	void Start()
 	{	
-		AudioManager.Instance.PlayLoop2D(audioLoopName, this.audioLoop);
+		AudioManager.Instance.PlayLoop2D(audioLoopName, this.audioLoop, 0.666f, 0.0f, true);
 	}
 
 	public void ButtonAction(string actionName) 

@@ -7,11 +7,11 @@ public class InfoManager : MonoBehaviour
 	[SerializeField] private AudioClip audioLoop;
 	[SerializeField] private int mainMenuScene = 1;
 
-	private const string audioLoopName = "InfoLoop";
+	private const string audioLoopName = "MainMenuLoop";
 
 	void Start() 
 	{
-		AudioManager.Instance.PlayLoop2D(audioLoopName, this.audioLoop);
+		AudioManager.Instance.PlayLoop2D(audioLoopName, audioLoop, 0.85f, 0.0f, false);
 	}
 
 	public void ButtonAction(string actionName) 
@@ -25,10 +25,5 @@ public class InfoManager : MonoBehaviour
 				Debug.Log("Triggered default, please check button onClick actions");
 				break;
 		}
-	}
-	
-	void OnDestroy()
-	{
-		AudioManager.Instance.StopLoop(audioLoopName);
 	}
 }

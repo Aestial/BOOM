@@ -17,7 +17,7 @@ public class MainMenuManager : MonoBehaviour
 
 	void Start()
 	{
-		AudioManager.Instance.PlayLoop2D(audioLoopName, this.audioLoop);
+		AudioManager.Instance.PlayLoop2D(audioLoopName, audioLoop, 0.85f, 0.0f, false);
 	}
 	public void MenuButtonAction(string sceneName) 
 	{
@@ -26,6 +26,7 @@ public class MainMenuManager : MonoBehaviour
 		{
 			case "Level":
 				scene = (int)MainMenuScenes.Level;
+				AudioManager.Instance.StopLoop(audioLoopName);
 				break;
 			case "Info":
 				scene = (int)MainMenuScenes.Info;
@@ -35,9 +36,5 @@ public class MainMenuManager : MonoBehaviour
 				break;
 		}
 		AppManager.Instance.ChangeScene(scene);
-	}
-	void OnDestroy()
-	{
-		AudioManager.Instance.StopLoop(audioLoopName);
 	}
 }
