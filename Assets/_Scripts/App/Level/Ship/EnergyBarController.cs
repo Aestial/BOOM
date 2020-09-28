@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 [System.Serializable]
@@ -24,13 +22,13 @@ public class EnergyBarController : MonoBehaviour
 
 	void Start () 
 	{
-		this.Set(0.0f);
+		Set(0.0f);
 	}
 	
 	#if UNITY_EDITOR
 	void Update () 
 	{
-		this.Set(this.amount);
+        Set(amount);
 	}
 	#endif
 
@@ -39,25 +37,25 @@ public class EnergyBarController : MonoBehaviour
 		// Empty case
 		if (amount <= 0.0f)
 		{
-			this.fillImage.color = this.empty.color;
-			this.fillImage.fillAmount = this.empty.fillAmount;
+            fillImage.color = empty.color;
+			fillImage.fillAmount = empty.fillAmount;
 		}
 		// Full case
 		else if (amount >= 1.0f)
 		{
-			this.fillImage.color = this.full.color;
-			this.fillImage.fillAmount = this.full.fillAmount;
+			fillImage.color = full.color;
+			fillImage.fillAmount = full.fillAmount;
 		}
 		// Lower Half
 		else if (amount <= 0.5f)
 		{
-			this.fillImage.fillAmount = Mathf.Lerp(this.empty.fillAmount, this.full.fillAmount, amount);
-			this.fillImage.color = Color.Lerp(this.empty.color, this.medium, amount * 2);
+            fillImage.fillAmount = Mathf.Lerp(empty.fillAmount, full.fillAmount, amount);
+			fillImage.color = Color.Lerp(empty.color, medium, amount * 2);
 		}
 		else
 		{
-			this.fillImage.fillAmount = Mathf.Lerp(this.empty.fillAmount, this.full.fillAmount, amount);
-			this.fillImage.color = Color.Lerp(this.medium, this.full.color, (amount - 0.5f) * 2);
+			fillImage.fillAmount = Mathf.Lerp(empty.fillAmount, full.fillAmount, amount);
+            fillImage.color = Color.Lerp(medium, full.color, (amount - 0.5f) * 2);
 		}
 		this.amount = amount;
 	}

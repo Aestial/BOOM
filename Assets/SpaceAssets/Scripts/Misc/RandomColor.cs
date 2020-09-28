@@ -24,8 +24,4 @@ public class RandomColor : MonoBehaviour {
             spriteRenderer.color = colors[colorSelected];
 		}
 	}
-	
-	void Update () {
-	
-	}
 }

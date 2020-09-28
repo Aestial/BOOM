@@ -53,10 +53,6 @@ public class GameSFX : MonoBehaviour
 		notifier = new Notifier();
     }
 
-	private void Start()
-	{
-    }
-
 	private void Update()
 	{
 		if(AudioListener.volume != globalVolume)

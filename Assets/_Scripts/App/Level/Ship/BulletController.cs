@@ -53,7 +53,7 @@ public class BulletController : MonoBehaviour
 		{
 			yield return new WaitForSeconds(animationInterval);
 			
-			time += this.animationInterval;
+			time += animationInterval;
 			
 			transform.position = Vector3.Lerp(startPosition, endPosition, time);
 			transform.localScale = Vector3.Lerp(startScale, endScale, time);

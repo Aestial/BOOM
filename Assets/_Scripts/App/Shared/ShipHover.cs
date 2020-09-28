@@ -15,7 +15,7 @@ public class ShipHover : MonoBehaviour
 
 	void Start ()
 	{
-		InvokeRepeating("GetNewHeight", refreshRate, refreshRate);
+		InvokeRepeating(nameof(GetNewHeight), refreshRate, refreshRate);
 	}
 
 	private void GetNewHeight()

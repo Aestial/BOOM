@@ -121,7 +121,7 @@ public class AudioManager : Singleton<AudioManager>
         audio.loop = false;
         audio.PlayDelayed(delay);
 
-        StopSoundAfterDelay(name, audio.clip.length);
+        StartCoroutine(StopSoundAfterDelay(name, audio.clip.length));
 
         if (!destroyOnLoad)
         {

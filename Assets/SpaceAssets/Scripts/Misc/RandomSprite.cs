@@ -19,7 +19,4 @@ public class RandomSprite : MonoBehaviour {
 		}
 	}
 	
-	void Update () {
-	
-	}
 }

@@ -18,8 +18,4 @@ public class RandomSize : MonoBehaviour {
         //Choose a random multiplied scale from the initial scale and the multiplierMax variable
         transform.localScale = initialScale * Random.Range(1f, multiplierMax);
     }
-    
-    void Update () {
-		
-	}
 }
