@@ -1,14 +1,23 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class LeverController : MonoBehaviour 
 {
+
 	[SerializeField] private float maxRotation;
 	[SerializeField] private AudioClip pullSoundFX;
 	[SerializeField] private AudioClip releaseSoundFX;
+	[SerializeField] private GameObject helpCanvas;
 
-	public new bool enabled;
+	public new bool enabled
+	{
+		get { return m_Enabled; }
+		set 
+		{
+			helpCanvas.SetActive(value);
+			m_Enabled = value;
+		}
+	}
+	private bool m_Enabled;
 
 	public delegate void ClickAction();
 	public event ClickAction OnClicked;
@@ -30,7 +39,6 @@ public class LeverController : MonoBehaviour
 			this.enabled = false;
 			this.OnClicked();
 		}
-			
 	}
 	
 	void OnMouseUp()
