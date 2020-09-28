@@ -1,12 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
+using TMPro;
 
 public class MessagesManager : MonoBehaviour 
 {
 	[SerializeField] private SceneMessages messagesData;
-	[SerializeField] private Text messagesText;
+	[SerializeField] private TMP_Text messagesText;
 
 	private Notifier notifier;
 
