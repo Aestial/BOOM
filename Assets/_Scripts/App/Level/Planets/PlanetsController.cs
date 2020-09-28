@@ -4,52 +4,54 @@ using UnityEngine;
 
 public class PlanetsController : MonoBehaviour 
 {
-	[SerializeField] private SpriteRenderer planet;
-	[SerializeField] private IntVariable planetCount;
-	[SerializeField] private PlanetsData data;
+	[SerializeField] private Transform planetContainer = default;
+	[SerializeField] private IntVariable planetCount = default;
+	[SerializeField] private PlanetsData data = default;
 	
 	public int startEnergySteps = 2;
 
+	private GameObject m_CurrentPlanet;
 	private int m_Count;
 
 	public int count
 	{
-		get { return this.m_Count; }
+		get { return m_Count; }
 		set 
 		{ 
-			this.m_Count = value;
-			this.planetCount.RuntimeValue = value;
+			m_Count = value;
+			planetCount.RuntimeValue = value;
 		}
 	}
 
 	void Start () 
 	{
-		this.m_Count = this.planetCount.RuntimeValue;
-		this.planet.enabled = true;
+		m_Count = planetCount.RuntimeValue;
+		planetContainer.gameObject.SetActive(true);
 	}
 
 	public void NewPlanet()
 	{
-		this.ViewPlanet(true);
-		int length = this.data.templates.Length;
+		ViewPlanet(true);
+		int length = data.templates.Length;
 		int index = Random.Range(0, length);
-		this.planet.sprite = this.data.templates[index].sprite;
-		// Debug.Log("New Planet: " + this.data.templates[index].name + " Index: " + index);
-	}
+		m_CurrentPlanet = Instantiate(data.templates[index].prefab, planetContainer);
+        Debug.Log("New Planet: " + data.templates[index].name + " Index: " + index);
+    }
 	
 	public void Destroy()
 	{
-		this.ViewPlanet(false);
-		this.count++;
+		ViewPlanet(false);
+		Destroy(m_CurrentPlanet);
+		count++;
 	}
 
 	public void Restart()
 	{
-		this.count = 0;
+		count = 0;
 	}
 
 	private void ViewPlanet(bool on)
 	{
-		this.planet.enabled = on;
+		planetContainer.gameObject.SetActive(true);
 	}
 }

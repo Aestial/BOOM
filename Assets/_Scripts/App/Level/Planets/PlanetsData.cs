@@ -6,7 +6,7 @@ using UnityEngine;
 public struct PlanetTemplate
 {
 	public string name;
-	public Sprite sprite;
+	public GameObject prefab;
 }
 
 [CreateAssetMenu]
