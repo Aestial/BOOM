@@ -33,7 +33,9 @@ public class PauseManager : MonoBehaviour
 
     public void OnApplicationPause(bool pause)
     {
-        if (pause)
+        // TODO: Check Condition!
+        if (pause && (StateManager.Instance.State != GameState.Start 
+        && StateManager.Instance.State != GameState.End))
             PauseGame();
     }
 }
