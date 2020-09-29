@@ -35,17 +35,23 @@ public class PlanetsController : MonoBehaviour
 		m_CurrentPlanet = Instantiate(data.templates[index].prefab, planetContainer);
         Debug.Log("New Planet: " + data.templates[index].name + " Index: " + index);
     }
+
+	private void DestroyPlanet()
+    {
+		ViewPlanet(false);
+		Destroy(m_CurrentPlanet);
+	}
 	
 	public void Destroy()
 	{
-		ViewPlanet(false);
-		Destroy(m_CurrentPlanet);
 		count++;
+		DestroyPlanet();
 	}
 
 	public void Restart()
 	{
 		count = 0;
+		DestroyPlanet();
 	}
 
 	private void ViewPlanet(bool on)

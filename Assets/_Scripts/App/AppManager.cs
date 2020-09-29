@@ -9,7 +9,7 @@ public class AppManager : Singleton<AppManager>
 	#if UNITY_EDITOR
 	private EditorBuildSettingsScene[] mScenes;
 	#endif
-	[SerializeField] private int mScenesLength;
+	[SerializeField] private int mScenesLength = 3;
 	private int mCurrentScene;
 	
 	public bool iAmFirst;
