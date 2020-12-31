@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.EventSystems;
 
 public enum ButtonAction
 {
@@ -29,23 +30,37 @@ public class ShipActorController : MonoBehaviour
 	}
 	void OnMouseDown()
 	{
-		if (enabled)
+		if (EventSystem.current.IsPointerOverGameObject())
 		{
-			Push(true);
-			Illuminate(true);
+			Debug.Log("Clicked on the UI");
+		}
+		else
+		{
+			if (enabled)
+			{
+				Push(true);
+				Illuminate(true);
+			}
 		}
   	}
 	
 	void OnMouseUp()
 	{
-		if (enabled)
+		if (EventSystem.current.IsPointerOverGameObject())
 		{
-			Push(false);
-			Illuminate(false);
-			PlaySound(ButtonAction.Push, 1.18f);
-			PlaySound(ButtonAction.Show, 0.83f);
-            // Execute suscripted events:
-            OnClicked?.Invoke(this.gameObject.name);
+			Debug.Log("Clicked on the UI");
+		}
+		else
+		{
+			if (enabled)
+			{		
+				Push(false);
+				Illuminate(false);
+				PlaySound(ButtonAction.Push, 1.18f);
+				PlaySound(ButtonAction.Show, 0.83f);
+				// Execute suscripted events:
+				OnClicked?.Invoke(this.gameObject.name);
+			}
         }
 	}
 
