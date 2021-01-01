@@ -10,6 +10,8 @@ public enum GameState
     Enemy,
     /** Battle loop */
     Player,
+    /** Game Paused */
+    Pause,
     /** Two Remaining */
     Correct,
     /** Winner focus */
