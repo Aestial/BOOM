@@ -3,11 +3,14 @@
 public class PauseManager : MonoBehaviour
 {
     [SerializeField] Canvas canvas = default;
+    [SerializeField] private AudioClip pauseClip = default;
+    [SerializeField] private AudioClip fwdClip = default;
     public bool isPaused;
     private GameState prevState;
 
     public void PauseGame()
     {
+        AudioManager.Instance.PlayOneShoot2D(pauseClip);
         prevState = StateManager.Instance.State;
         ConfigPause(true);
         StateManager.Instance.State = GameState.Pause;
@@ -15,6 +18,7 @@ public class PauseManager : MonoBehaviour
 
     public void ResumeGame()
     {
+        AudioManager.Instance.PlayOneShoot2D(fwdClip);
         ConfigPause(false);
         StateManager.Instance.State = prevState;
     }

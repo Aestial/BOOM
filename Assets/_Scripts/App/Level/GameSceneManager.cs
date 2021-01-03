@@ -5,6 +5,8 @@ using UnityEngine;
 public class GameSceneManager : MonoBehaviour 
 {
 	[SerializeField] private AudioClip audioLoop = default;
+	[SerializeField] private AudioClip fwdClip = default;
+	[SerializeField] private AudioClip bwdClip = default;
 	[SerializeField] private int mainMenuScene = 1;
 
 	[SerializeField] private Canvas startCanvas = default;
@@ -30,10 +32,12 @@ public class GameSceneManager : MonoBehaviour
 		{
 			case "Menu":
 				AppManager.Instance.ChangeScene(this.mainMenuScene);
+				AudioManager.Instance.PlayOneShoot2D(bwdClip);
 				break;
 			case "Play":
 			case "Again":
 				GameManager.Instance.Restart();
+				AudioManager.Instance.PlayOneShoot2D(fwdClip);
 				break;
 			default:
 				Debug.Log("Triggered default, please check button onClick actions");

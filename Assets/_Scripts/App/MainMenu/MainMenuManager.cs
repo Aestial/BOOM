@@ -10,6 +10,7 @@ public enum MainMenuScenes
 public class MainMenuManager : MonoBehaviour 
 {
 	[SerializeField] private AudioClip audioLoop = default;
+	[SerializeField] private AudioClip fwdClip = default;
 
 	private const string audioLoopName = "MainMenuLoop";
 
@@ -20,6 +21,8 @@ public class MainMenuManager : MonoBehaviour
 	public void MenuButtonAction(string sceneName) 
 	{
 		int scene = (int)MainMenuScenes.Self;
+		AudioManager.Instance.PlayOneShoot2D(fwdClip);
+		
 		switch(sceneName)
 		{
 			case "Level":

@@ -5,6 +5,7 @@ using UnityEngine;
 public class InfoManager : MonoBehaviour 
 {
 	[SerializeField] private AudioClip audioLoop = default;
+	[SerializeField] private AudioClip bwdClip = default;
 	[SerializeField] private int mainMenuScene = 1;
 
 	private const string audioLoopName = "MainMenuLoop";
@@ -19,6 +20,7 @@ public class InfoManager : MonoBehaviour
 		switch(actionName)
 		{
 			case "Back":
+				AudioManager.Instance.PlayOneShoot2D(bwdClip);
 				AppManager.Instance.ChangeScene(this.mainMenuScene);
 				break;
 			default:
