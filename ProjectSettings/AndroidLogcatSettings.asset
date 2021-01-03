@@ -2,8 +2,8 @@
     "m_SelectedDeviceId": "R9TMB0EQ2NJ",
     "m_SelectedPackage": {
         "deviceId": "R9TMB0EQ2NJ",
-        "name": "com.LiquidCat.BOOM",
-        "processId": 30299,
+        "name": "com.robota.boom.game",
+        "processId": 15105,
         "exited": false
     },
     "m_SelectedPriority": 0,
@@ -12,6 +12,42 @@
             "deviceId": "R9TMB0EQ2NJ",
             "name": "com.LiquidCat.BOOM",
             "processId": 30299,
+            "exited": false
+        },
+        {
+            "deviceId": "R9TMB0EQ2NJ",
+            "name": "com.robota.boom.game",
+            "processId": 20571,
+            "exited": true
+        },
+        {
+            "deviceId": "R9TMB0EQ2NJ",
+            "name": "com.robota.boom.game",
+            "processId": 25996,
+            "exited": true
+        },
+        {
+            "deviceId": "R9TMB0EQ2NJ",
+            "name": "com.robota.boom.game",
+            "processId": 3850,
+            "exited": true
+        },
+        {
+            "deviceId": "R9TMB0EQ2NJ",
+            "name": "com.robota.boom.game",
+            "processId": 8557,
+            "exited": true
+        },
+        {
+            "deviceId": "R9TMB0EQ2NJ",
+            "name": "com.robota.boom.game",
+            "processId": 10459,
+            "exited": true
+        },
+        {
+            "deviceId": "R9TMB0EQ2NJ",
+            "name": "com.robota.boom.game",
+            "processId": 15105,
             "exited": false
         }
     ],
