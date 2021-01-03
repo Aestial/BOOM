@@ -21,8 +21,7 @@ public class MainMenuManager : MonoBehaviour
 	public void MenuButtonAction(string sceneName) 
 	{
 		int scene = (int)MainMenuScenes.Self;
-		AudioManager.Instance.PlayOneShoot2D(fwdClip);
-		
+		AudioManager.Instance.PlayOneShoot2D(fwdClip);		
 		switch(sceneName)
 		{
 			case "Level":
