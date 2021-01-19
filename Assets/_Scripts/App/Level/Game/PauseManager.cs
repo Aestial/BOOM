@@ -43,6 +43,6 @@ public class PauseManager : MonoBehaviour
         {
             canvas.enabled = isPaused;
         }        
-        isPaused = isPaused;
+        this.isPaused = isPaused;
     }
 }
