@@ -1,13 +1,18 @@
 ﻿using UnityEngine;
+using Liquid.Actions;
 
+[RequireComponent(typeof(CallbackDelay))]
 public class HealthDisplayController : MonoBehaviour 
 {
 	[SerializeField] HealthLightController[] healthLights = default;
 	private int amount;
 	private int maxAmount;
 
+	private CallbackDelay delay;
+
 	void Start () 
 	{
+		delay = GetComponent<CallbackDelay>();
 		maxAmount = healthLights.Length - 1;
 		amount = maxAmount;
 	}
@@ -22,7 +27,7 @@ public class HealthDisplayController : MonoBehaviour
 
 	public void Set(int amount)
 	{
-		WaitingMan.Instance.WaitAndCallback(0.01f, () => {
+		delay.Invoke(0.01f, () => {
 			if (amount >= maxAmount)
 			{
 				Reset();

@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
+using Liquid.Actions;
 
+[RequireComponent(typeof(CallbackDelay))]
 public class GameManager : Singleton<GameManager> 
 {
 	// Gameplay objects
@@ -35,6 +37,8 @@ public class GameManager : Singleton<GameManager>
 	private GameSequence sequence;
 	private int index;
 
+	private CallbackDelay delay;
+
 	private delegate void Callback();
 
 	public float WaitTime
@@ -47,6 +51,7 @@ public class GameManager : Singleton<GameManager>
 
 	void Awake ()
 	{	
+		delay = GetComponent<CallbackDelay>();
 		notifier = new Notifier();
 		notifier.Subscribe(ExplosionController.ON_EXPLOSION_PEAK, HandleOnExplosionPeak);
 		notifier.Subscribe(ExplosionController.ON_EXPLOSION_END, HandleOnExplosionEnd);
@@ -91,7 +96,7 @@ public class GameManager : Singleton<GameManager>
 				}
 				else
 				{
-					WaitingMan.Instance.WaitAndCallback(endTime, () => {
+					delay.Invoke(endTime, () => {
 						index = 0;
 						IncrementSequence();
 						DisplaySequence();
@@ -105,12 +110,12 @@ public class GameManager : Singleton<GameManager>
 			StateManager.Instance.State = GameState.Incorrect;
 			AudioManager.Instance.PlayOneShoot2D(incorrectAudioFX);
 			// Wait and Restart game
-			WaitingMan.Instance.WaitAndCallback(endTime, () => {
+			delay.Invoke(endTime, () => {
 				DecreaseHealth();
 				if (health <= 0)
 				{
 					StateManager.Instance.State = GameState.Loser;
-					WaitingMan.Instance.WaitAndCallback(endTime, () => {
+					delay.Invoke(endTime, () => {
 						StateManager.Instance.State = GameState.End;
 					});
 				}
@@ -160,7 +165,7 @@ public class GameManager : Singleton<GameManager>
 	private void Warm()
 	{
 		StateManager.Instance.State = GameState.Warm;
-		WaitingMan.Instance.WaitAndCallback(warmTime, () => {
+		delay.Invoke(warmTime, () => {
 			InitializeSequence();
 			DisplaySequence();
 		});
@@ -222,7 +227,7 @@ public class GameManager : Singleton<GameManager>
 	private void HandleOnExplosionEnd(params object[] args)
 	{
 		StateManager.Instance.State = GameState.Winner;
-		WaitingMan.Instance.WaitAndCallback(endTime, () => {
+		delay.Invoke(endTime, () => {
 			NewPlanet();
 		});
 	}

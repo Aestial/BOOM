@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
+using Liquid.Actions;
 
+[RequireComponent(typeof(CallbackDelay))]
 public class ExplosionController : MonoBehaviour 
 {
 	[SerializeField] private AudioClip audioFX = default;
@@ -9,6 +11,8 @@ public class ExplosionController : MonoBehaviour
 	private SpriteRenderer[] sprites;
 	private new SpriteRenderer renderer;
 
+	private CallbackDelay delay;
+
 	private Notifier notifier;
 	public const string ON_EXPLOSION_PEAK = "OnExplosionPeak";
 	public const string ON_EXPLOSION_END = "OnExplosionEnd";
@@ -16,6 +20,7 @@ public class ExplosionController : MonoBehaviour
 	void Awake ()
 	{
 		notifier = new Notifier();
+		delay = GetComponent<CallbackDelay>();
 	}
 	
 	void Start () 
@@ -40,7 +45,7 @@ public class ExplosionController : MonoBehaviour
 	{
 		EnableSprites(true);
 		animation.Play();
-		WaitingMan.Instance.WaitAndCallback(audioDelay, () => {
+		delay.Invoke(audioDelay, () => {
 			AudioManager.Instance.PlayOneShoot2D(audioFX);
 		});
 	}
