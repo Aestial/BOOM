@@ -45,4 +45,9 @@ public class PauseManager : MonoBehaviour
         }        
         this.isPaused = isPaused;
     }
+
+    private void OnDestroy() 
+    {
+        Time.timeScale = 1;
+    }
 }
