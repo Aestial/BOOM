@@ -3,16 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class GameSceneManager : MonoBehaviour 
-{
-	[SerializeField] private AudioClip audioLoop = default;
-	[SerializeField] private AudioClip fwdClip = default;
-	[SerializeField] private AudioClip bwdClip = default;
-	[SerializeField] private int mainMenuScene = 1;
-
+{	
 	[SerializeField] private Canvas startCanvas = default;
 	[SerializeField] private Canvas endCanvas = default;
-
-	private const string audioLoopName = "LevelLoop";
 	private Notifier notifier;
 
 	void Awake()
@@ -21,23 +14,18 @@ public class GameSceneManager : MonoBehaviour
 		this.notifier.Subscribe(StateManager.ON_STATE_ENTER, HandleOnStateEnter);
 	}
 
-	void Start()
-	{	
-		AudioManager.Instance.PlayLoop2D(audioLoopName, this.audioLoop, 0.666f, 0.0f, true);
-	}
-
 	public void ButtonAction(string actionName) 
 	{
 		switch(actionName)
 		{
 			case "Menu":
-				AppManager.Instance.ChangeScene(this.mainMenuScene);
-				AudioManager.Instance.PlayOneShoot2D(bwdClip);
+				// AppManager.Instance.ChangeScene(this.mainMenuScene);
+				// AudioManager.Instance.PlayOneShoot2D(bwdClip);
 				break;
 			case "Play":
 			case "Again":
 				GameManager.Instance.Restart();
-				AudioManager.Instance.PlayOneShoot2D(fwdClip);
+				// AudioManager.Instance.PlayOneShoot2D(fwdClip);
 				break;
 			default:
 				Debug.Log("Triggered default, please check button onClick actions");
@@ -54,7 +42,6 @@ public class GameSceneManager : MonoBehaviour
 	
 	void OnDestroy()
 	{
-		AudioManager.Instance.StopLoop(audioLoopName);
 		this.notifier.UnsubcribeAll();
 	}
 }
