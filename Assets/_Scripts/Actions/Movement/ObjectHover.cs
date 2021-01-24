@@ -1,9 +1,7 @@
 ﻿using UnityEngine;
 
-public class ShipHover : MonoBehaviour 
+public class ObjectHover : MonoBehaviour 
 {
-	[Header("Rotation Settings")]
-	[SerializeField] private float rotationSpeed = 80.0f;
 	[Header("Hover Settings")]
 	[SerializeField] private float amplitude = 1.0f;
 	[SerializeField] private float refreshRate = 1.0f;
@@ -31,6 +29,5 @@ public class ShipHover : MonoBehaviour
 	{
 		transform.localPosition = Vector3.Lerp(initialPosition, finalPosition, currentTime);
 		currentTime += Time.deltaTime;
-		transform.eulerAngles += new Vector3(0, rotationSpeed * Time.deltaTime);
 	}
 }
