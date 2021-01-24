@@ -82,7 +82,7 @@ public class AudioManager : Singleton<AudioManager>
 	{
 		if(source == null)
 		{
-			//Debug.LogError("[Audio Manager] source is null ");
+			//Debug.LogWarning("[Audio Manager] source is null ");
 			return;
 		}
 
@@ -104,13 +104,13 @@ public class AudioManager : Singleton<AudioManager>
     {
         if (Instance.sounds.ContainsKey(name))
         {
-            Debug.LogError("[Audio Manager] Sound name already in use '" + name + "'");
+            Debug.LogWarning("[Audio Manager] Sound name already in use '" + name + "'");
             return;
         }
 
         if (source == null)
         {
-            Debug.LogError("[Audio Manager] source is null ");
+            Debug.LogWarning("[Audio Manager] source is null ");
             return;
         }
 
@@ -176,13 +176,13 @@ public class AudioManager : Singleton<AudioManager>
 	{
 		if(Instance.loops.ContainsKey(name))
 		{
-			Debug.LogError("[Audio Manager] Loop name already in use '" + name + "'");
+			Debug.LogWarning("[Audio Manager] Loop name already in use '" + name + "'");
 			return;
 		}
 
 		if(source == null)
 		{
-			Debug.LogError("[Audio Manager] source is null ");
+			Debug.LogWarning("[Audio Manager] source is null ");
 			return;
 		}
 
