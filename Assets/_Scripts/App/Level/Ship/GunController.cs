@@ -1,13 +1,16 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class GunController : MonoBehaviour 
 {
 	[SerializeField] private BulletController[] bullets = default;
-	[SerializeField] private ExplosionController explosion = default;
 
 	[SerializeField] private AudioClip shootSoundFX = default;
+
+	[SerializeField]
+	UnityEvent OnExplode;
 	
 	private int count;
 
@@ -52,7 +55,7 @@ public class GunController : MonoBehaviour
 		this.count++;
 		if (this.count >= this.bullets.Length)
 		{
-			this.explosion.Explode();
+			OnExplode.Invoke();
 		}
 	}
 
