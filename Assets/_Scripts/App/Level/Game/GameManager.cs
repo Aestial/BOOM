@@ -53,8 +53,6 @@ public class GameManager : Singleton<GameManager>
 	{	
 		delay = GetComponent<CallbackDelay>();
 		notifier = new Notifier();
-		notifier.Subscribe(ExplosionController.ON_EXPLOSION_PEAK, HandleOnExplosionPeak);
-		notifier.Subscribe(ExplosionController.ON_EXPLOSION_END, HandleOnExplosionEnd);
 	}
 	
 	void Start () 
@@ -73,6 +71,19 @@ public class GameManager : Singleton<GameManager>
 			planets.Destroy();
 			NewPlanet();
 		}
+	}
+
+	public void HandleOnExplosionPeak()
+	{
+		planets.Destroy();
+	}
+
+	public void HandleOnExplosionEnd()
+	{
+		StateManager.Instance.State = GameState.Winner;
+		delay.Invoke(endTime, () => {
+			NewPlanet();
+		});
 	}
 
 	public void CheckPlayerInput(string buttonName)
@@ -217,19 +228,6 @@ public class GameManager : Singleton<GameManager>
 	private void SetHealth(int health)
 	{
 		ship.SetHealth(this.health - 1);
-	}
-
-	private void HandleOnExplosionPeak(params object[] args)
-	{
-		planets.Destroy();
-	}
-
-	private void HandleOnExplosionEnd(params object[] args)
-	{
-		StateManager.Instance.State = GameState.Winner;
-		delay.Invoke(endTime, () => {
-			NewPlanet();
-		});
 	}
 
 	void OnDestroy ()

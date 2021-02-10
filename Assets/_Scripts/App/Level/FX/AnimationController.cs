@@ -5,12 +5,6 @@ public class AnimationController : MonoBehaviour
 	[SerializeField] private string animationName = default;
 	private Animator animator;
 
-	public delegate void AnimationEventAction(string name);
-	public event AnimationEventAction OnAnimationEvent;
-
-	public delegate void AnimationEndAction();
-	public event AnimationEndAction OnAnimationEnd;
-
 	void Start ()
 	{
 		animator = GetComponent<Animator>();
@@ -25,14 +19,4 @@ public class AnimationController : MonoBehaviour
 	{
 		animator.StopPlayback();
 	}
-
-	public void AnimationEndReached()
-	{
-        OnAnimationEnd?.Invoke();
-    }
-
-	public void AnimationEvent(string name)
-	{
-        OnAnimationEvent?.Invoke(name);
-    }
 }
