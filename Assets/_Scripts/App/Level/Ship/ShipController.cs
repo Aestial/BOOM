@@ -1,16 +1,19 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class ShipController : MonoBehaviour 
 {
 	[SerializeField] private ShipActorController[] actors = default;
 	[SerializeField] private LeverController lever = default;
-	[SerializeField] private GunController gun = default;
 	[SerializeField] private EnergyBarController energyBar = default;
 	[SerializeField] private HealthDisplayController healthDisplay =  default;
 	[Header("FX")]
 	[SerializeField] private ParticleSystem fireFX = default;
+
+	[SerializeField]
+	UnityEvent OnShoot;
 	
 	private Notifier notifier;
 
@@ -100,7 +103,7 @@ public class ShipController : MonoBehaviour
 
 	private void LeverAction()
 	{
-		this.gun.Shoot();
+		OnShoot?.Invoke();
 		this.SetEnergy(0);
 	}
 

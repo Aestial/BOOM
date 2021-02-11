@@ -1,16 +1,16 @@
 ﻿using System.Collections;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class BulletController : MonoBehaviour 
 {
 	[SerializeField] private Transform startPoint = default;
 	[SerializeField] private Transform endPoint = default;
-	//[SerializeField] private float animationTime = 2.5f;
 	[SerializeField] private float animationInterval = 0.01f;
 	[SerializeField] private TrailRenderer trail = default;
 
-	public delegate void AnimationEndAction();
-	public event AnimationEndAction AnimationEnd;
+	[SerializeField]
+	UnityEvent OnAnimationEnd;
 
 	private float time;
 	private new MeshRenderer renderer;
@@ -23,11 +23,6 @@ public class BulletController : MonoBehaviour
 	}
 
 	public void Shoot()
-	{
-		StartAnimation();
-	}
-
-	private void StartAnimation()
 	{
 		StartCoroutine(AnimationCoroutine());
 	}
@@ -75,6 +70,6 @@ public class BulletController : MonoBehaviour
 		transform.position = startPoint.position;
 		transform.localScale = startPoint.localScale;
 
-        AnimationEnd?.Invoke();
+		OnAnimationEnd?.Invoke();
     }
 }
