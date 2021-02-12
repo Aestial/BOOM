@@ -2,9 +2,9 @@
 
 public class PlanetsController : MonoBehaviour 
 {
-	[SerializeField] private Transform planetContainer = default;
+	[SerializeField] private Transform container = default;
 	[SerializeField] private IntVariable planetCount = default;
-	[SerializeField] private PlanetsData data = default;
+	[SerializeField] private TemplateCollection templateCollection = default;
 	
 	public int startEnergySteps = 2;
 
@@ -24,16 +24,17 @@ public class PlanetsController : MonoBehaviour
 	void Start () 
 	{
 		m_Count = planetCount.RuntimeValue;
-		planetContainer.gameObject.SetActive(true);
+		container.gameObject.SetActive(true);
 	}
 
 	public void NewPlanet()
 	{
 		ViewPlanet(true);
-		int length = data.templates.Length;
+		int length = templateCollection.templates.Length;
 		int index = Random.Range(0, length);
-		m_CurrentPlanet = Instantiate(data.templates[index].prefab, planetContainer);
-        Debug.Log("New Planet: " + data.templates[index].name + " Index: " + index);
+		var prefab = templateCollection.templates[index].prefab;
+		m_CurrentPlanet = Instantiate(prefab, container);
+        Debug.Log("New Planet: " + templateCollection.templates[index].name + " Index: " + index);
     }
 
 	private void DestroyPlanet()
@@ -56,6 +57,6 @@ public class PlanetsController : MonoBehaviour
 
 	private void ViewPlanet(bool on)
 	{
-		planetContainer.gameObject.SetActive(true);
+		container.gameObject.SetActive(true);
 	}
 }
