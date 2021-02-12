@@ -4,7 +4,7 @@ using Liquid.Actions;
 [RequireComponent(typeof(CallbackDelay))]
 public class HealthDisplayController : MonoBehaviour 
 {
-	[SerializeField] HealthLightController[] healthLights = default;
+	[SerializeField] BoolStateEventTrigger[] healthLights = default;
 	private int amount;
 	private int maxAmount;
 
@@ -21,7 +21,7 @@ public class HealthDisplayController : MonoBehaviour
 	{
 		for (int i = 0; i <= maxAmount; i++)
 		{
-			healthLights[i].Illuminate(true);
+			healthLights[i].Value = true;
 		}
 	}
 
@@ -36,7 +36,7 @@ public class HealthDisplayController : MonoBehaviour
 			{
 				for (int i = maxAmount; i > amount; i--)
 				{
-					healthLights[i].Illuminate(false);
+					healthLights[i].Value = false;
 				}
 			}
 			this.amount = amount;
