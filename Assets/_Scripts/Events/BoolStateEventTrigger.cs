@@ -8,14 +8,14 @@ public class BoolStateEventTrigger : MonoBehaviour
     [SerializeField] UnityEvent onEnabled;
     [SerializeField] UnityEvent onDisabled;
 
-    private bool _value;
-    public bool Value 
+    private bool state;
+    public bool State 
     {
-        get { return _value; }
+        get { return state; }
         set {
-            _value = value;
-            onChange.Invoke(_value);
-            if (_value)
+            state = value;
+            onChange.Invoke(state);
+            if (state)
                 onEnabled.Invoke();
             else
                 onDisabled.Invoke();
