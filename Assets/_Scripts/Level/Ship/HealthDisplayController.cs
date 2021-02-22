@@ -21,7 +21,7 @@ public class HealthDisplayController : MonoBehaviour
 	{
 		for (int i = 0; i <= maxAmount; i++)
 		{
-			healthLights[i].Value = true;
+			healthLights[i].State = true;
 		}
 	}
 
@@ -36,7 +36,7 @@ public class HealthDisplayController : MonoBehaviour
 			{
 				for (int i = maxAmount; i > amount; i--)
 				{
-					healthLights[i].Value = false;
+					healthLights[i].State = false;
 				}
 			}
 			this.amount = amount;
