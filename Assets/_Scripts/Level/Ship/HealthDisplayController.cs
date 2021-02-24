@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using Liquid.Actions;
+using Liquid.Events;
 
 [RequireComponent(typeof(CallbackDelay))]
 public class HealthDisplayController : MonoBehaviour 

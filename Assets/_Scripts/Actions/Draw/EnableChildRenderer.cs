@@ -2,26 +2,29 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnableChildRenderer : MonoBehaviour
+namespace Liquid.Actions
 {
-    [SerializeField] bool enabledOnStart;
-    Renderer[] renderers;
-
-    public void EnableChildren(bool enabled)
-	{
-		for (int i = 0; i < renderers.Length; i++)
-		{
-			renderers[i].enabled = enabled;
-		}
-	}
-
-    void Awake()
+    public class EnableChildRenderer : MonoBehaviour
     {
-        renderers = GetComponentsInChildren<Renderer>();    
-    }
+        [SerializeField] bool enabledOnStart;
+        Renderer[] renderers;
 
-    void Start()
-    {
-        EnableChildren(enabledOnStart);
+        public void EnableChildren(bool enabled)
+        {
+            for (int i = 0; i < renderers.Length; i++)
+            {
+                renderers[i].enabled = enabled;
+            }
+        }
+
+        void Awake()
+        {
+            renderers = GetComponentsInChildren<Renderer>();    
+        }
+
+        void Start()
+        {
+            EnableChildren(enabledOnStart);
+        }    
     }    
 }

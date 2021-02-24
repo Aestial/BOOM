@@ -1,22 +1,25 @@
 ﻿using UnityEngine;
 
-[RequireComponent(typeof(Animator))]
-public class PlayAnimationInController : MonoBehaviour 
+namespace Liquid.Actions
 {
-	private Animator animator;
-
-	void Start ()
+	[RequireComponent(typeof(Animator))]
+	public class PlayAnimationInController : MonoBehaviour 
 	{
-		animator = GetComponent<Animator>();
-	}
+		private Animator animator;
 
-	public void Play(string name)
-	{
-		animator.Play(name, -1, 0f);
-	}
+		void Start ()
+		{
+			animator = GetComponent<Animator>();
+		}
 
-	public void Stop()
-	{
-		animator.StopPlayback();
-	}
+		public void Play(string name)
+		{
+			animator.Play(name, -1, 0f);
+		}
+
+		public void Stop()
+		{
+			animator.StopPlayback();
+		}
+	}	
 }

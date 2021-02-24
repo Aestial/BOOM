@@ -2,23 +2,26 @@
 using UnityEngine;
 using UnityEngine.Events;
 
-public class BoolStateEventTrigger : MonoBehaviour 
+namespace Liquid.Events
 {
-    [SerializeField] BoolEvent onChange;
-    [SerializeField] UnityEvent onEnabled;
-    [SerializeField] UnityEvent onDisabled;
-
-    private bool state;
-    public bool State 
+    public class BoolStateEventTrigger : MonoBehaviour 
     {
-        get { return state; }
-        set {
-            state = value;
-            onChange.Invoke(state);
-            if (state)
-                onEnabled.Invoke();
-            else
-                onDisabled.Invoke();
+        [SerializeField] BoolEvent onChange;
+        [SerializeField] UnityEvent onEnabled;
+        [SerializeField] UnityEvent onDisabled;
+
+        private bool state;
+        public bool State 
+        {
+            get { return state; }
+            set {
+                state = value;
+                onChange.Invoke(state);
+                if (state)
+                    onEnabled.Invoke();
+                else
+                    onDisabled.Invoke();
+            }
         }
-    }
+    }   
 }

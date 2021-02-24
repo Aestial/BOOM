@@ -3,23 +3,26 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class SceneLoader : MonoBehaviour
+namespace Liquid.Actions
 {
-    [SerializeField]
-    private string scene = "";
-
-    public void Load ()
+    public class SceneLoader : MonoBehaviour
     {
-        Load(scene);
-    }
+        [SerializeField]
+        private string scene = "";
 
-    public void Load (string sceneName)
-    {
-        SceneManager.LoadScene(sceneName);
-    }
+        public void Load ()
+        {
+            Load(scene);
+        }
 
-    void Start()
-    {
-        
-    }
+        public void Load (string sceneName)
+        {
+            SceneManager.LoadScene(sceneName);
+        }
+
+        void Start()
+        {
+            
+        }
+    }   
 }
