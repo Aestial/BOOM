@@ -16,13 +16,13 @@ public class IntVariableUIText : MonoBehaviour
 	
 	void Update () 
 	{
-		if (intVar.RuntimeValue != value)
+		if (intVar.Value != value)
 			UpdateUI();
 	}
 
 	void UpdateUI ()
 	{
-		value = intVar.RuntimeValue;
+		value = intVar.Value;
 		text.text = value.ToString(format);
 	}
 }
