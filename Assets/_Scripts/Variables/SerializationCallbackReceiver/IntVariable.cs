@@ -11,10 +11,19 @@ public class IntVariable : ScriptableObject, ISerializationCallbackReceiver
 	[NonSerialized]
 	public int RuntimeValue;
 
+	public int Value 
+	{
+		get { return RuntimeValue; } 
+		set { RuntimeValue = value; }
+	}
+
 	public void OnAfterDeserialize()
 	{
 		this.RuntimeValue = this.InitialValue;
 	}
 
-	public void OnBeforeSerialize() {}
+	public void OnBeforeSerialize() 
+	{
+		this.InitialValue = this.RuntimeValue;
+	}
 }
