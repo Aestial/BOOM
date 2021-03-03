@@ -27,7 +27,7 @@ namespace Liquid.Variables
         {
             get 
             {                
-                serializable = GetFromFileOrCreate(() => { return new BoolSerializable(); });
+                serializable = GetFromFileOrCreate(() => { return new BoolSerializable(serializable.value); });
                 Debug.Log("Getting: " + this.name + ". Value: " + serializable.value);
                 return serializable.value;
             }
