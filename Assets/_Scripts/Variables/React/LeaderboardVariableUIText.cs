@@ -3,9 +3,9 @@ using UnityEngine.UI;
 using TMPro;
 using Liquid.Variables;
 
-public class StringVariableUIText : MonoBehaviour 
+public class LeaderboardVariableUIText : MonoBehaviour 
 {
-	[SerializeField] StringVariable variable = default;
+	[SerializeField] LeaderboardVariable variable = default;
 	[SerializeField] TMP_Text text = default;
 
 	[SerializeField] bool setOnStart = default;
@@ -15,7 +15,6 @@ public class StringVariableUIText : MonoBehaviour
 
 	void Start () 
 	{
-		value = text.text;
 		if (setOnStart)
 		{			
 			Set();
@@ -24,15 +23,14 @@ public class StringVariableUIText : MonoBehaviour
 	
 	void Update () 
 	{
-		if (setOnUpdate && variable.Value != value)
+		if (setOnUpdate)
 		{
 			Set();
 		}
 	}
 
 	public void Set ()
-	{		
-		value = value.Replace("{value}", variable.Value);
-		text.text = value;
+	{
+		text.text = variable.ToString();
 	}
 }

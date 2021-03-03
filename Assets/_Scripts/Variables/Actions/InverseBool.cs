@@ -7,28 +7,25 @@ namespace Liquid
 {
     using Variables;
 
-    public class BoolBranch : MonoBehaviour
+    public class InverseBool : MonoBehaviour
     {
         [SerializeField] BoolVariable variable = default;
         [SerializeField] UnityEvent onTrue = default;
         [SerializeField] UnityEvent onFalse = default;
-        [SerializeField] UnityEvent onStart = default;
 
-        // Start is called before the first frame update
-        void Start()
+        public void Evaluate(bool value)
         {
-            onStart.Invoke();
-        }
-
-        public void Evaluate()
-        {
-            if (variable.Value)
+            if (value)
             {  
-                onTrue.Invoke();
+                onFalse.Invoke();
                 return;
             }
-            onFalse.Invoke();        
+            onTrue.Invoke();
         }
+        public void Evaluate()
+        {
+            Evaluate(variable.Value);
+        }   
     }
     
 }

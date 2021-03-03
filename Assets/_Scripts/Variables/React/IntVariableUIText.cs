@@ -3,7 +3,7 @@ using UnityEngine.UI;
 
 public class IntVariableUIText : MonoBehaviour 
 {
-	[SerializeField] IntVariable intVar = default;
+	[SerializeField] IntVariableCallback intVar = default;
 	[SerializeField] Text text = default;
 	[SerializeField] string format = "D2";
 
