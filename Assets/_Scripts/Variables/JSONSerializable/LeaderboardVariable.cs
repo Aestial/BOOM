@@ -43,10 +43,19 @@ namespace Liquid.Variables
         {
             if (!String.IsNullOrEmpty(user) && score > 0)
             {
-                Match match = new Match(user, score);
-                Add(match);
-                Sort();
-                Truncate();
+                var userMatch = matches.Find(match => match.user == user);
+                if (userMatch == null)
+                {   
+                    Match match = new Match(user, score);
+                    Add(match);
+                    Sort();
+                    Truncate();
+                }
+                else if (userMatch.score < score)
+                {
+                    userMatch.score = score;
+                    Sort();
+                }                
             }
         }        
         public override string ToString()
