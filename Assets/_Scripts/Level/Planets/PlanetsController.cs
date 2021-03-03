@@ -3,7 +3,7 @@
 public class PlanetsController : MonoBehaviour 
 {
 	[SerializeField] private Transform container = default;
-	[SerializeField] private IntVariable planetCount = default;
+	[SerializeField] private IntVariableCallback planetCount = default;
 	[SerializeField] private TemplateCollection templateCollection = default;
 	
 	public int startEnergySteps = 2;
