@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu]
-public class IntVariable : ScriptableObject, ISerializationCallbackReceiver
+public class IntVariableCallback : ScriptableObject, ISerializationCallbackReceiver
 {
 	public int InitialValue;
 	

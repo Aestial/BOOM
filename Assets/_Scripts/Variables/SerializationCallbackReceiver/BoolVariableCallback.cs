@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu]
-public class BoolVariable : ScriptableObject, ISerializationCallbackReceiver
+public class BoolVariableCallback : ScriptableObject, ISerializationCallbackReceiver
 {
 	public bool InitialValue;
 	
