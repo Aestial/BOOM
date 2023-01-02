@@ -9,10 +9,10 @@ showPackageIndexes = false
 showStatusBar = false
 debounceMs = 250
 scopes = {
-	"last_search.B1CC2302" = "h: "
+	"last_search.B1CC2302" = ""
 	"m_ShownPanels.B1CC2302" = "3"
-	"m_SideBarSplitter.B1CC2302" = "180"
-	"m_DetailsPanelSplitter.B1CC2302" = "700"
+	"m_SideBarSplitter.B1CC2302" = "80"
+	"m_DetailsPanelSplitter.B1CC2302" = "257"
 	"currentGroup.B1CC2302" = "scene"
 }
 providers = {
