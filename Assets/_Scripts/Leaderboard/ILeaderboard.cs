@@ -1,18 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public class ILeaderboard : MonoBehaviour
+namespace Liquid.Leaderboard
 {
-    // Start is called before the first frame update
-    void Start()
+    public interface ILeaderboard
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        public void Submit(int score);
+        public void Retrieve();
     }
 }

@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Liquid.Sound 
 {
-    public class PlayLoop : MonoBehaviour
+    public class PlayMusicLoop : MonoBehaviour
     {
         [SerializeField]
         private bool playOnStart = true;

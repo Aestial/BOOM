@@ -46,9 +46,10 @@ namespace Liquid.Leaderboard
             if (matches.Count > 0)
             {
                 var str = "";
-                foreach (Match match in matches)
+                for (int i = 0; i < matches.Count; i++)
                 {
-                    str += match.ToString() + "\n";
+                    Match match = matches[i];
+                    str += (i + 1).ToString() + ". " + match.ToString() + "\n";
                 }
                 return str;
             }

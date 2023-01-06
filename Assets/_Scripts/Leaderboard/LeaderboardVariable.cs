@@ -52,6 +52,5 @@ namespace Liquid.Variables
         {
             return Value.ToString();
         }
-    }
-    
+    }   
 }
