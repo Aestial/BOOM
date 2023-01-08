@@ -19,8 +19,7 @@ namespace Liquid.LootLocker
 
         public void Add()
         {
-            Submit(count.RuntimeValue);
-            Retrieve();
+            StartCoroutine(AddRoutine());
         }
         public void Submit(int score)
         {
@@ -29,6 +28,12 @@ namespace Liquid.LootLocker
         public void Retrieve()
         {
             StartCoroutine(RetrieveListRoutine());
+        }
+
+        IEnumerator AddRoutine()
+        {
+            yield return SubmitScoreRoutine(count.RuntimeValue);
+            yield return RetrieveListRoutine();
         }
         IEnumerator SubmitScoreRoutine(int score)
         {
