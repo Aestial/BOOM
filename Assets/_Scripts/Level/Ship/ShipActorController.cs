@@ -13,6 +13,7 @@ public class ShipActorController : MonoBehaviour
 	[SerializeField] private float emissionIntensity = default;
 	[SerializeField] private AudioClip showSoundFX = default;
 	[SerializeField] private AudioClip pushSoundFX = default;
+	[SerializeField] private AudioSource audioSource = default;
 
 	private Material material;
 
@@ -108,7 +109,8 @@ public class ShipActorController : MonoBehaviour
 			clip = this.showSoundFX;
 			break;
 		}
-		AudioManager.Instance.PlayOneShoot(clip, volume);
+		audioSource.volume = volume;
+		audioSource.PlayOneShot(clip);
 	}
 
 }

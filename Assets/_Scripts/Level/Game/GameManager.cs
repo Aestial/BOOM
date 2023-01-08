@@ -6,32 +6,35 @@ public class GameManager : Singleton<GameManager>
 {
 	// Gameplay objects
 	[Header("Objects")]
-	[SerializeField] private ShipController ship = default;
-	[SerializeField] private PlanetsController planets = default;
-
+	[SerializeField] private ShipController m_Ship = default;
+	[SerializeField] private PlanetsController m_Planets = default;
 	// Gameplay parameters
-	[Header("Parameters")]
-	[SerializeField] private int maxHealth = 3;
-	[SerializeField] private int startLength = 2;
-	[Header("Waiting Times")]
-	[SerializeField] private float startWaitTime = 0.5f;
-	[SerializeField] private float waitTimeDecrement = 0.2f;
-	[SerializeField] private float endTime = 0.8f;
-	[SerializeField] private float warmTime = 2.0f;
+	[Header("Player parameters")]
+	[SerializeField] private int m_MaxHealth = 3;
+    
+	[Header("Sequence parameters")]
+    [SerializeField] private float m_CommandDelayDecrement = 0.1f;
+    [SerializeField] private int m_EnergyStepsInverseMultiplier = 4;
+    [SerializeField] private int m_SequenceCountInverseMultiplier = 3; 
+	[SerializeField] private float m_StartCommandDelay = 0.5f;
+	[SerializeField] private int m_StartSequenceCount = 2;
 
+	[Header("Game loop delays")]
+    [SerializeField] private float m_PlanetDelay = 0.8f;
+	[SerializeField] private float m_SequenceDelay = 2.0f;
 	// Gameplay Sounds
 	[Header("Sound FX")]
-	[SerializeField] AudioClip correctAudioFX = default;
-	[SerializeField] AudioClip incorrectAudioFX = default;
+	[SerializeField] AudioClip m_CorrectAudioFX = default;
+	[SerializeField] AudioClip m_IncorrectAudioFX = default;
 
-	private float energy;
-	private int currentStep;
-	private int currentLength;
-	private float currentWaitTime;
+	private float m_Energy;
+	private int m_CurrentStep;
+	private int m_CurrentSequenceCount;
+	private float m_CurrentCommandDelay;
 	// [SerializeField] 
-	private int currentEnergySteps;
+	private int m_CurrentEnergySteps;
 	
-	private int health;
+	private int m_Health;
 	
 	// Sequence
 	private GameSequence sequence;
@@ -43,8 +46,8 @@ public class GameManager : Singleton<GameManager>
 
 	public float WaitTime
 	{
-		get { return currentWaitTime; }
-		set { currentWaitTime = value; }
+		get { return m_CurrentCommandDelay; }
+		set { m_CurrentCommandDelay = value; }
 	}
 
 	private Notifier notifier;
@@ -68,20 +71,20 @@ public class GameManager : Singleton<GameManager>
 		}
 		if (Input.GetKeyDown(KeyCode.P))
 		{
-			planets.Destroy();
+			m_Planets.Destroy();
 			NewPlanet();
 		}
 	}
 
 	public void HandleOnExplosionPeak()
 	{
-		planets.Destroy();
+		m_Planets.Destroy();
 	}
 
 	public void HandleOnExplosionEnd()
 	{
 		StateManager.Instance.State = GameState.Winner;
-		delay.Invoke(endTime, () => {
+		delay.Invoke(m_PlanetDelay, () => {
 			NewPlanet();
 		});
 	}
@@ -98,16 +101,16 @@ public class GameManager : Singleton<GameManager>
 			{
 				// Add one button to enemy sequence and show
 				StateManager.Instance.State = GameState.Correct;
-				AudioManager.Instance.PlayOneShoot2D(correctAudioFX);
-				IncrementEnergy();
-				if (currentStep == currentEnergySteps)
+				AudioManager.Instance.PlayOneShoot2D(m_CorrectAudioFX);
+				AddEnergy(1);
+				if (m_CurrentStep == m_CurrentEnergySteps)
 				{
 					StateManager.Instance.State = GameState.Shoot;
-					ship.EnableLever(true);
+					m_Ship.EnableLever(true);
 				}
 				else
 				{
-					delay.Invoke(endTime, () => {
+					delay.Invoke(m_PlanetDelay, () => {
 						index = 0;
 						IncrementSequence();
 						DisplaySequence();
@@ -119,46 +122,56 @@ public class GameManager : Singleton<GameManager>
 		else
 		{
 			StateManager.Instance.State = GameState.Incorrect;
-			AudioManager.Instance.PlayOneShoot2D(incorrectAudioFX);
+			AudioManager.Instance.PlayOneShoot2D(m_IncorrectAudioFX);
 			// Wait and Restart game
-			delay.Invoke(endTime, () => {
-				DecreaseHealth();
-				if (health <= 0)
+			delay.Invoke(m_PlanetDelay, () => {
+				AddHealth(-1);
+				if (m_Health <= 0)
 				{
 					StateManager.Instance.State = GameState.Loser;
-					delay.Invoke(endTime, () => {
+					delay.Invoke(m_PlanetDelay, () => {
 						StateManager.Instance.State = GameState.End;
 					});
 				}
 				else 
 				{
-					RestartSequence();
-				}
+                    // Use same sequence for ease
+					delay.Invoke(m_PlanetDelay, () =>
+                    {
+                        index = 0;
+                        DisplaySequence();
+                    });
+                    // Legacy:
+                    // RestartSequence();
+                }
 			});
 		}
 	}
 
 	public void Restart()
 	{
-		health = maxHealth;
-		currentEnergySteps = planets.startEnergySteps;
-		currentLength = startLength;
-		currentWaitTime = startWaitTime;
-		SetHealth(health);
-		planets.Restart();
+		m_Health = m_MaxHealth;
+		m_CurrentEnergySteps = m_Planets.startEnergySteps;
+		m_CurrentSequenceCount = m_StartSequenceCount;
+		m_CurrentCommandDelay = m_StartCommandDelay;
+		SetHealth(m_Health);
+		m_Planets.Restart();
 		NewPlanet();
 	}
 
 	private void NewPlanet()
 	{
-		planets.NewPlanet();
-		if (planets.count > 0)
+		m_Planets.NewPlanet();
+		if (m_Planets.count > 0)
 		{
-			currentWaitTime -= waitTimeDecrement / planets.count;
-			currentLength = startLength + planets.count / 2;
-			currentEnergySteps = planets.startEnergySteps + planets.count / 3;
+			m_CurrentCommandDelay -= m_CommandDelayDecrement / m_Planets.count;
+			m_CurrentSequenceCount = m_StartSequenceCount + m_Planets.count / m_SequenceCountInverseMultiplier;
+			m_CurrentEnergySteps = m_Planets.startEnergySteps + m_Planets.count / m_EnergyStepsInverseMultiplier;
 		}
-		RestartSequence();
+        if (m_Planets.count % 5 == 0)
+            AddHealth(1);
+
+        RestartSequence();
 	}
 
 	private void RestartSequence()
@@ -167,8 +180,8 @@ public class GameManager : Singleton<GameManager>
 		sequence = new GameSequence();
 		// Restart helpers
 		index = 0;
-		currentStep = 0;
-		SetEnergy(currentStep);
+		m_CurrentStep = 0;
+		SetEnergy(m_CurrentStep);
         // Warm and Start
         Warm();
 	}
@@ -176,7 +189,7 @@ public class GameManager : Singleton<GameManager>
 	private void Warm()
 	{
 		StateManager.Instance.State = GameState.Warm;
-		delay.Invoke(warmTime, () => {
+		delay.Invoke(m_SequenceDelay, () => {
 			InitializeSequence();
 			DisplaySequence();
 		});
@@ -184,7 +197,7 @@ public class GameManager : Singleton<GameManager>
 
 	private void InitializeSequence() 
 	{
-		for (int i = 0; i < currentLength; i++)
+		for (int i = 0; i < m_CurrentSequenceCount; i++)
 		{
 			IncrementSequence();
 		}
@@ -192,14 +205,14 @@ public class GameManager : Singleton<GameManager>
 
 	private void IncrementSequence()
 	{
-		ShipActorController actor = ship.GetRandomActor();
+		ShipActorController actor = m_Ship.GetRandomActor();
 		sequence.AddActor(actor);
 	}
 
 	private void DisplaySequence() 
 	{
 		StateManager.Instance.State = GameState.Enemy;
-		ship.DisplaySequence(sequence.GetArray(), DisplaySequenceCallback);
+		m_Ship.DisplaySequence(sequence.GetArray(), DisplaySequenceCallback);
 	}
 
 	private void DisplaySequenceCallback()
@@ -207,27 +220,30 @@ public class GameManager : Singleton<GameManager>
 		StateManager.Instance.State = GameState.Player;
 	}
 
-	private void IncrementEnergy()
+	private void AddEnergy(int increment)
 	{
-		currentStep++;
-		SetEnergy(currentStep);
+		this.m_CurrentStep += increment;
+		SetEnergy(m_CurrentStep);
 	}
 
 	private void SetEnergy(int step)
 	{
-		energy = step/(float)currentEnergySteps;
-		ship.SetEnergy(energy);
+		m_Energy = step/(float)m_CurrentEnergySteps;
+		m_Ship.SetEnergy(m_Energy);
 	}
 
-	private void DecreaseHealth()
-	{
-		health--;
-		SetHealth(health);
-	}
+	private void AddHealth(int increment)
+    {
+        this.m_Health += increment;
+		if (this.m_Health > m_MaxHealth)
+			this.m_Health = m_MaxHealth;
 
-	private void SetHealth(int health)
+        SetHealth(m_Health);
+    }
+
+	private void SetHealth(int m_Health)
 	{
-		ship.SetHealth(this.health - 1);
+		m_Ship.SetHealth(this.m_Health - 1);
 	}
 
 	void OnDestroy ()
