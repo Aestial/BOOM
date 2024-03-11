@@ -1,0 +1,9 @@
+theme: jekyll-theme-minimal
+title: "BOOM: Destroy planets"
+description: "Discover planets through the outer space and show off our advanced tech destroying them all!"
+
+# Markdown and syntax highlight
+markdown: kramdown
+highlighter: rouge
+kramdown:
+  input: GFM
